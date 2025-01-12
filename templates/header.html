@@ -1,0 +1,97 @@
+{% load static %}
+
+
+<nav class="navbar navbar-expand-md shadow-sm">
+    <div class="container-fluid">
+        <!-- Logo and Brand Name -->
+        <a class="navbar-brand d-flex align-items-center header_website_logo" href="{% url 'home' %}">
+            <img src="{% static 'images/site/site_logo.png' %}" alt="Logo" />
+            <span class="website_name">Ridex<hr style="margin: 0 !important; opacity: 0.5 !important;">Leather</span>
+        </a>
+
+        <!-- Mobile Toggle Button -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Desktop Options -->
+        <div class="collapse navbar-collapse" id="desktopMenu">
+            <div class="position-relative d-flex mx-auto w-50">
+                <input class="form-control product-search-bar" type="search" placeholder="Search Product" aria-label="Search">
+                <div class="d-none dropdown-product-search"></div>
+                <button class="btn btn-secondary product-search-btn" id="header-search-products-button">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+            <ul class="navbar-nav ms-auto anonymous_user">
+                <li class="nav-item">
+                    <a class="nav-link btn btn-outline-secondary px-3" href="{% url 'login' %}">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn btn-outline-secondary px-3 ms-2" href="{% url 'register' %}">Sign Up</a>
+                </li>
+            </ul>
+            <div class="profile-dropdown dropdown position-relative authorized_user">
+                <!-- Profile Picture -->
+                <a href="#" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false" class="d-flex align-items-center text-decoration-none">
+                    <img class="nav-link user_profile_image p-0 ms-0" src="/static/images/default_user_profile.png">
+                </a>
+                <!-- Dropdown Menu -->
+                <ul class="dropdown-menu text-start position-absolute" aria-labelledby="profileDropdown">
+                    <!-- Profile Info -->
+                    <li>
+                        <div class="dropdown-item-text fw-bold user_name">User</div>
+                        <div class="dropdown-item-text text-muted user_email" style="font-size: 12px;">user@example.com</div>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <!-- Action Items -->
+                    <li><a class="dropdown-item" href="{% url 'profile' %}">View Profile</a></li>
+                    <li><a class="dropdown-item" href="{% url 'user-cart' %}">My Cart</a></li>
+                    <li><a class="dropdown-item" href="{% url 'user-wishlist' %}">My Wishlist</a></li>
+                    <li><a class="dropdown-item" href="#">Help & Support</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item text-danger logoutBtn" href="#">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Mobile Sidebar -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="mobileMenuLabel">Menu</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <!-- Profile Section -->
+        <div class="slider_user_profile authorized_user">
+            <img class="user_profile_image" src="/static/images/default_user_profile.png" alt="Profile Picture">
+            <h4 class="user_name">User</h4>
+            <p class="user_email">user@example.com</p>
+        </div>
+        <ul>
+            <!-- Search Bar -->
+            <div class="position-relative d-flex my-3">
+                <input class="form-control product-search-bar" type="search" placeholder="Search Product" aria-label="Search">
+                <div class="d-none dropdown-product-search"></div>
+                <button class="btn btn-secondary product-search-btn">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+            <!-- Menu Items -->
+            <li class="authorized_user"><a href="{% url 'home' %}"><i class="fa fa-home"></i> Home</a></li>
+            <li class="authorized_user"><a href="{% url 'profile' %}"><i class="fa fa-user"></i> Profile</a></li>
+            <li class="authorized_user"><a href="{% url 'user-cart' %}"><i class="fa fa-shopping-cart"></i> My Cart</a></li>
+            <li class="anonymous_user"><a href="{% url 'login' %}"><i class="fa fa-sign-in"></i> Login</a></li>
+            <li class="anonymous_user"><a href="{% url 'register' %}"><i class="fa fa-user-plus"></i> Register</a></li>
+            <li><a href="{% url 'user-wishlist' %}"><i class="fa fa-heart"></i> My Wishlist</a></li>
+            <li><a href="#"><i class="fa fa-question-circle"></i> Help</a></li>
+            <li class="authorized_user logoutBtn"><a><i class="fa fa-sign-out"></i> Logout</a></li>
+        </ul>
+        <!-- Footer -->
+        <div class="footer">
+            &copy; 2024 Ridex Leather
+        </div>
+    </div>
+</div>

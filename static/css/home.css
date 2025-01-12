@@ -1,0 +1,157 @@
+.header-categories {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    white-space: nowrap;
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #efe9e9;
+}
+.header-category {
+    display: inline-block;
+    padding: 10px 15px;
+    color: #625555;
+    text-decoration: none;
+    font-size: 13px;
+    transition: background-color 0.5s, transform 0.5s;
+}
+.header-category:hover {
+    color: #3a3535;
+    transform: scale(1.2);
+}
+.explore-category {
+    margin-left: 10px;
+    color: #b75353;
+    font-size: 15px;
+    border-right: 2px solid #9b9595;
+}
+.carousel-item img {
+    height: 600px;
+    width: 100%;
+}
+.carousel-caption {
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    border-radius: 8px;
+}
+.carousel-caption h5 {
+    color: rgb(250, 249, 249);
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+.carousel-caption p {
+    color: white;
+    font-size: 1rem;
+    margin-bottom: 15px;
+}
+.carousel-caption .btn {
+    background-color: #007bff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+}
+.carousel-caption .btn:hover {
+    background-color: #0056b3;
+}
+@media only screen and  (max-width:992px) {
+    .carousel-item img {
+        height: 500px;
+    }
+}
+@media only screen and  (max-width:768px) {
+    .carousel-caption {
+        position: unset !important;
+        margin-bottom: 20px;
+        border-radius: 0px;
+    }
+    .carousel-item img {
+        height: 400px;
+    }
+}
+@media only screen and  (max-width:576px) {
+    .carousel-item img {
+        height: 300px;
+    }
+}
+.category-product-card {
+    margin: 10px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    width: auto;
+    position: relative;
+    box-shadow: 1px 1px 9px 2px #bbc9ce;    ;
+}
+.category-product-card:hover {
+    border: 1.5px solid rgba(129, 150, 168, 0.64);
+    transform: scale(1.01);
+}
+.category-product-image img {
+    width: 100%;
+    height: 300px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+}
+.category-product-name {
+    font-size: 18px;
+    font-weight: 600;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin: 10px 0;
+}
+.category-product-name p {
+    text-wrap: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.category-product-name p:hover {
+    text-wrap: unset;
+    overflow: auto;
+    text-overflow: ellipsis;
+}
+.category-product-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+.category-product-price {
+    font-size: 1.25rem;
+    color: #28a745;
+    font-weight: 600;
+}
+.category-product-price del {
+    color: #333;
+}
+.category-product-buttons {
+    display: flex;
+    text-align: center;
+    gap: 5px;
+}
+.discount-ribbon {
+    position: absolute;
+    top: 0;
+    left: 10px;
+    width: 37px;
+    height: 58px;
+    padding-top: 5px;
+    background: #ee0404cc;
+    color: white;
+    text-align: center;
+    line-height: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
+}
+.see-all-button {
+    text-decoration: none;
+    color: #008000c2;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+.see-all-button:hover {
+    color: #08ac08db;
+    transform: scale(1.2);
+}

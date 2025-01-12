@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Ridex Leather - Product Details{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="{% static 'css/product/product_details.css' %}">
+{% endblock %}
+
+{% block content %}
+    <!-- Product details and purchase section -->
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-12 col-lg-7 position-relative" id="product_image_container"></div>
+            <div class="col-12 col-lg-5 ps-4" id="product_details_container"></div>
+        </div>
+    </div>
+    <!--Categories wise products list -->
+    <div class="container" id="related_products_container"></div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-element-bundle.min.js"></script>
+    <script src="{% static 'js/product/product_details.js' %}"></script>
+{% endblock %}

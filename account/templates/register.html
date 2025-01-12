@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Register - Ridex Leather  {% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/account/register.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="signup_container">
+    <h3 class="text-center">Signup</h3>
+    <form id="signupForm">
+        {% csrf_token %}
+        <p id="error-message" class="error-message"></p>
+        <div class="form-group">
+            <label for="first_name">Name</label>
+            <input type="text" id="first_name" name="first_name" placeholder="Enter your first name" required>
+            <input type="text" id="last_name" name="last_name" placeholder="Enter your last name (Optional)">
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter password" required>
+            <small class="text-muted">Password must be at least 6 characters long.</small><br>
+            <small class="text-muted">Password must contain at least one digit and one letter.</small>
+        </div>
+        <div class="form-group">
+            <label for="password1">Confirm Password</label>
+            <input type="password" id="password1" name="password1" placeholder="Confirm password" required>
+        </div>
+        <div class="form-group text-center">
+            <button class="signup_button" type="submit">Signup</button>
+        </div>
+    </form>
+    <hr>
+    <div class="text-center">
+        <p class="mb-0">Already have an account? <a href="{% url 'login' %}" class="text-primary text-decoration-none">Login</a></p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{% static 'js/account/register.js' %}"></script>
+{% endblock %}
