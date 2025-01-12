@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Profile - Ridex Leather {% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/account/profile.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.10/css/intlTelInput.css">
+{% endblock %}
+
+{% block content %}
+<div class="profile-page">
+    <!-- Profile Form -->
+    <form id="editProfileForm">
+        {% csrf_token %}
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="profile-image">
+                <div class="position-relative profile-image-container">
+                    <label for="profileImage">
+                        <img src="/static/images/default_user_profile.png" alt="Profile Picture" id="profilePreview">
+                        <div class="upload-icon">
+                            <i class="fa fa-upload"></i> <!-- Replace with your icon (Font Awesome or any other) -->
+                        </div>
+                    </label>
+                    <input class="d-none" type="file" id="profileImage" name="profile_image" accept="image/*" onchange="previewImage(event)">
+                </div>
+            </div>
+            <h2>My Profile</h2>
+            <p>Manage your account information</p>
+        </div>
+        <p id="error-message" class="border border-danger rounded text-center mb-3 text-danger p-2" style="display: none;"></p>
+        <div class="row">
+            <div class="col-md-6">
+                <label for="firstName">First Name</label>
+                <input type="text" class="form-control" id="firstName" name="first_name" placeholder="Enter your first name">
+            </div>
+            <div class="col-md-6">
+                <label for="lastName">Last Name</label>
+                <input type="text" class="form-control" id="lastName" name="last_name" placeholder="Enter your last name">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <label for="email">Email Address</label>
+                <input type="email" class="form-control" id="email" name="email" value="user@example.com" readonly>
+            </div>
+            <div class="col-md-6">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" name="username" value="username123" readonly>
+            </div>
+        </div>
+
+        <label for="streetAddress1">Street Address 1</label>
+        <input type="text" class="form-control" id="streetAddress1" name="street_address_1" placeholder="Enter street address 1">
+
+        <label for="streetAddress2">Street Address 2</label>
+        <input type="text" class="form-control" id="streetAddress2" name="street_address_2" placeholder="Enter street address 2">
+
+        <div class="row">
+            <div class="col-md-4">
+                <label for="city">City</label>
+                <input type="text" class="form-control" id="city" name="city" placeholder="Enter city">
+            </div>
+            <div class="col-md-4">
+                <label for="state">State</label>
+                <input type="text" class="form-control" id="state" name="state" placeholder="Enter state">
+            </div>
+            <div class="col-md-4">
+                <label for="postalCode">Postal Code</label>
+                <input type="text" class="form-control" id="postalCode" name="postal_code" placeholder="Enter postal code">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <label for="phoneNumber">Phone Number</label>
+                <input type="tel" class="form-control" id="phoneNumber" name="mobile_number" placeholder="Enter your phone number">
+            </div>
+            <div class="col-md-6">
+                <label for="country_name">Country</label>
+                <input type="text" class="form-control pb-0 mb-0" id="country_name" name="country_name" readonly>
+                <small class="text-secondary">Select counrty code to choose country</small>
+            </div>
+        </div>
+
+
+        <label for="dob">Date of Birth</label>
+        <input type="date" class="form-control" id="birth_date" name="birth_date">
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary mt-4">Update Profile</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{% static 'js/account/profile.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.10/js/intlTelInput.js"></script>
+{% endblock %}

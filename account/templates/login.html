@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Login - My Website{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/account/login.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="login-card">
+    <h3 class="text-center">Login</h3>
+    <form id="loginForm">
+        <div class="mb-3">
+            <label for="loginInput" class="form-label">Username or Email address</label>
+            <input type="loginInput" class="form-control" id="loginInput" name="loginInput" placeholder="Enter your email or username" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+        </div>
+        <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="rememberMe">
+            <label class="form-check-label" for="rememberMe">Remember Me</label>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary w-50">Login</button>
+        </div>
+    </form>
+    <hr>
+    <div class="text-center">
+        <p class="mb-0">Don't have an account? <a href="{% url 'register' %}" class="text-primary text-decoration-none">Sign Up</a></p>
+        <p><a href="#" class="text-primary text-decoration-none">Forgot Password?</a></p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{% static 'js/account/login.js' %}"></script>
+{% endblock %}
