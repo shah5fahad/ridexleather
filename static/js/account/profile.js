@@ -16,7 +16,7 @@ function showErrorMessage(msg) {
 }
 
 $(document).ready(function () {
-    const profile_api_url = '/api/profile/';
+    const profile_api_url = '/api/profile';
     const phoneNumber = document.querySelector("#phoneNumber");
     const iti = window.intlTelInput(phoneNumber, {
         separateDialCode: true,  // Show the country code separately

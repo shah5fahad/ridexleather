@@ -132,7 +132,7 @@ function addProductToCart(btn, product_id, quantity = 1, main_product = false) {
         return
     }
     $.ajax({
-        url: "/orders/cart-items/",
+        url: "/orders/cart-items",
         type: "POST",
         dataType: 'json',
         headers: {
@@ -232,7 +232,7 @@ $(document).ready(function () {
         clearTimeout(debounceTimeout);
         debounceTimeout = setTimeout(() => {
             $.ajax({
-                url: "/items/product/search/",
+                url: "/items/product/search",
                 type: "GET",
                 data: { search: query }, // Pass the search term
                 success: function (response) {

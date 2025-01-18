@@ -1,5 +1,5 @@
 function updateCategoriesProducts(category_id, product_id) {
-    const apiURL = `/items/${category_id}/products/`;
+    const apiURL = `/items/${category_id}/products`;
 
     $.ajax({
         url: apiURL,
@@ -89,7 +89,7 @@ function updateCartItemsQuantity(btn, action, cart_id) {
         return;
     }
     $.ajax({
-        url: `/orders/cart-item/${cart_id}/`,
+        url: `/orders/cart-item/${cart_id}`,
         type: "PATCH", // Use PATCH for partial updates
         headers: {
             Authorization: `Bearer ${accessToken}`,

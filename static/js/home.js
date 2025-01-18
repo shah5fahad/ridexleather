@@ -1,5 +1,5 @@
 function fetchCategories() {
-    const apiUrl = `/items/categories/`; // Replace with your API URL
+    const apiUrl = `/items/categories`; // Replace with your API URL
 
     $.ajax({
         url: apiUrl,
@@ -33,7 +33,7 @@ function fetchCategories() {
 }
 
 function updateBanners() {
-    const apiUrl = '/items/banners/'; // Replace with your API URL
+    const apiUrl = '/items/banners'; // Replace with your API URL
 
     $.ajax({
         url: apiUrl,
