@@ -17,7 +17,7 @@ function fetchCategories() {
             )
             $.each(data, (idx, category) => {
                 categoriesContainer.append(
-                    `<a href="/items/category/products/?ct_id=${category.id}" class="header-category">${category.name}</a>`
+                    `<a href="/items?ct_id=${category.id}" class="header-category">${category.name}</a>`
                 );
                 // Update products category wise limit upto 5.
                 if (idx < 5) updateCategoriesProducts(category.id, category.name, category.product);
@@ -46,7 +46,7 @@ function updateBanners() {
                 `);
                 let heading = banner.name ? `<h5>${banner.name}</h5>` : '';
                 let description = banner.description ? `<p>${banner.description}</p>` : '';
-                let shop_button = banner.product ? `<a href="/items/product/?pt_id=${banner.product}" class="btn btn-primary">Shop Now</a>` : '';
+                let shop_button = banner.product ? `<a href="/items/product?pt_id=${banner.product}" class="btn btn-primary">Shop Now</a>` : '';
                 // Appending 
                 $('#bannerImageSlider .carousel-inner').append(`
                     <div class="carousel-item ${idx === 0 ? "active" : ""}">
@@ -77,7 +77,7 @@ function updateCategoriesProducts(category_id, category_name, products) {
             <swiper-slide>
                 <div class="category-product-card">
                     ${product.discount_percent ? '<div class="discount-ribbon">' + product.discount_percent + '&#37; OFF</div>' : ''}
-                    <a class="category-product-image" href="/items/product/?pt_id=${product.id}">
+                    <a class="category-product-image" href="/items/product?pt_id=${product.id}">
                         <img src="${product.product_image.length > 0 ? product.product_image[0].product_image : "/static/images/default-product-image.png"}" alt="${product.name}">
                     </a>
                     <div class="category-product-name"><p>${product.name}</p></div>
@@ -100,7 +100,7 @@ function updateCategoriesProducts(category_id, category_name, products) {
         <div class="category-products my-5 position-relative" id="category_${category_id}">
             <div class="d-flex justify-content-between align-items-center">
                 <h2 class="my-4 text-bold">${category_name}</h2>
-                <a href="/items/category/products/?ct_id=${category_id}" class="see-all-button">SEE ALL</a>
+                <a href="/items?ct_id=${category_id}" class="see-all-button">SEE ALL</a>
             </div>
             <swiper-container id="product-row" navigation="true">
                 ${products_html}   

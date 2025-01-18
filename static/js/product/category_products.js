@@ -16,7 +16,7 @@ function updateSelectedCategories(btn, option) {
 
 function fetchFilterCategories(filters) {
     $.ajax({
-        url: "/items/category/search/",
+        url: "/items/category/search",
         type: "GET",
         data: filters,
         success: function (response) {
@@ -42,7 +42,7 @@ function fetchFilterCategories(filters) {
                 );
                 $.each(response.results, (idx, category) => {
                     categoriesContainer.append(
-                        `<a href="/items/category/products/?ct_id=${category.id}" class="header-category">${category.name}</a>`
+                        `<a href="/items?ct_id=${category.id}" class="header-category">${category.name}</a>`
                     );
                 });
                 // Initial adjustment
@@ -61,7 +61,7 @@ function fetchFilterProducts(filters, page = 1) {
     filters = JSON.parse(decodeURIComponent(filters))
     filters['page'] = page
     $.ajax({
-        url: "/items/product/search/",
+        url: "/items/product/search",
         type: "GET",
         data: filters,
         success: function (response) {
@@ -88,7 +88,7 @@ function fetchFilterProducts(filters, page = 1) {
                     <div class="col col-sm-6 col-md-6 col-lg-4 col-xl-4 col-xxl-3">
                         <div class="category-product-card">
                             ${product.discount_percent ? '<div class="discount-ribbon">' + product.discount_percent + '&#37; OFF</div>' : ''}
-                            <a class="category-product-image" href="/items/product/?pt_id=${product.id}">
+                            <a class="category-product-image" href="/items/product?pt_id=${product.id}">
                                 <img src="${product.product_image.length > 0 ? product.product_image[0].product_image : "/static/images/default-product-image.png"}" alt="${product.name}">
                             </a>
                             <div class="category-product-name"><p>${product.name}</p></div>
@@ -198,7 +198,7 @@ $(document).ready(function () {
     let debounceFilterTimeout;
     const searchParams = new URLSearchParams(window.location.search);
     if (!(searchParams.has('ct_id') || searchParams.has('search'))) {
-        window.location.href = "/account/home";
+        window.location.href = "/";
     }
     // Fetch all products initially
     fetchFilterCategories({});

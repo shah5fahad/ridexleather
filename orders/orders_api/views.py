@@ -21,7 +21,7 @@ class CartPageView(APIView):
     def get(self, request):
         # Redirect if the user is not authenticated
         if not request.user or request.user.is_anonymous:
-            return redirect("/account/login/")
+            return redirect("/login")
         # Render the login page template on GET request
         return render(request, self.template_name)
 
