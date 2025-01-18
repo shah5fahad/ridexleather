@@ -14,7 +14,7 @@ $("#signupForm").submit(function(e) {
     }
 
     $.ajax({
-        url: '/account/register/',
+        url: '/register',
         type: 'POST',
         data: JSON.stringify({
             first_name: first_name,
@@ -29,7 +29,7 @@ $("#signupForm").submit(function(e) {
         },
         success: function(response) {
             alert('Signup successful!');
-            window.location.href = '/account/login';  // Redirect to login page
+            window.location.href = '/login';  // Redirect to login page
         },
         error: function(xhr) { 
             $("#error-message").text(xhr.responseJSON.error ? Object.values(xhr.responseJSON.error)[0] : 'Signup failed.');

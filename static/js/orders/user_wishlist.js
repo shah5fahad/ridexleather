@@ -8,7 +8,7 @@ function fetchUserWishlistData() {
             <div class="wishlist-item" data-id="${item.id}">
                 <img src="${item.product_image.length > 0 ? item.product_image[0].product_image : "/static/images/default-product-image.png"}" alt="${item.name}">
                 <div class="wishlist-item-details" data-price="${item.discount_percent > 0 ? getDiscountPrice(item.price, item.discount_percent) : item.price}">
-                    <a class="text-decoration-none text-dark" href="/items/product/?pt_id=${item.id}">
+                    <a class="text-decoration-none text-dark" href="/items/product?pt_id=${item.id}">
                         <h5>${item.name}</h5>
                         <p class="mb-0">Product Price: <span class="text-success">${item.discount_percent && item.price ? `&#36;${getDiscountPrice(item.price, item.discount_percent)} <del class="text-danger">&#36;${item.price} </del>` : `&#36;${item.price}`}</span></p>
                     </a>

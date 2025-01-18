@@ -108,7 +108,7 @@ class RegisterUserView(APIView):
     def get(self, request):
         # Redirect to home page if already logged in
         if request.COOKIES.get("access_token"):
-            return redirect("/account/home/")
+            return redirect("/")
         return render(request, self.template_name)
 
     def post(self, request):
@@ -130,7 +130,7 @@ class LoginView(APIView):
     def get(self, request):
         # Redirect to home page if already logged in
         if request.COOKIES.get("access_token"):
-            return redirect("/account/home/")
+            return redirect("/")
         # Render the login page template on GET request
         return render(request, self.template_name)
 
@@ -196,7 +196,7 @@ class ProfilePageView(APIView):
     def get(self, request):
         # Redirect if the user is not authenticated
         if not request.user or request.user.is_anonymous:
-            return redirect("/account/login/")
+            return redirect("/login")
         # Render the login page template on GET request
         return render(request, self.template_name)
 

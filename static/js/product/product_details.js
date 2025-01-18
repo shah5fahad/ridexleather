@@ -16,7 +16,7 @@ function updateCategoriesProducts(category_id, product_id) {
                     <swiper-slide>
                         <div class="category-product-card">
                             ${product.discount_percent ? '<div class="discount-ribbon">' + product.discount_percent + '&#37; OFF</div>' : ''}
-                            <a class="category-product-image" href="/items/product/?pt_id=${product.id}">
+                            <a class="category-product-image" href="/items/product?pt_id=${product.id}">
                                 <img src="${product.product_image.length > 0 ? product.product_image[0].product_image : "/static/images/default-product-image.png"}" alt="${product.name}">
                             </a>
                             <div class="category-product-name"><p>${product.name}</p></div>
@@ -85,7 +85,7 @@ function updateCartItemsQuantity(btn, action, cart_id) {
     // Check access token for user login or not. Redirect to login page if not logged in.
     if (!accessToken) {
         if (localStorage.getItem('eg_user')) localStorage.removeItem('eg_user');        // Remove user credentials on logout.
-        window.location.href = '/account/login/';
+        window.location.href = '/login';
         return;
     }
     $.ajax({
@@ -176,8 +176,8 @@ function updateProductDetails(pt_id) {
             $('#product_details_container').append(`
                 <div class="product-details">
                     <div class="product-categorization">
-                        <a class="me-1" href="/account/home/">Home</a>&#47;
-                        <a class="mx-1" href="/items/category/products/?ct_id=${data.category.id}">${data.category.name}</a>&#47;
+                        <a class="me-1" href="">Home</a>&#47;
+                        <a class="mx-1" href="/items?ct_id=${data.category.id}">${data.category.name}</a>&#47;
                         <small>${data.name}</small>
                     </div>
                     <div class="main-product-name">${data.name}</div>
@@ -264,7 +264,7 @@ function updateProductDetails(pt_id) {
 $(document).ready(function() {
     const searchParams = new URLSearchParams(window.location.search);
     if (!searchParams.has('pt_id')) {
-        window.location.href = "/account/home";
+        window.location.href = "/";
     }
     // Fetch product details
     updateProductDetails(searchParams.get('pt_id'));

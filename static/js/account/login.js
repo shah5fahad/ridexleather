@@ -6,7 +6,7 @@ $("#loginForm").submit(function(e) {
     const password = $("#password").val();
 
     $.ajax({
-        url: "/account/login/",
+        url: "/login",
         type: "POST",
         headers: { "X-CSRFToken": getCookie('csrftoken') },
         data: JSON.stringify({
@@ -18,7 +18,7 @@ $("#loginForm").submit(function(e) {
             localStorage.setItem('eg_user', response.user)
             // Redirect to home or another protected page
             alert("Login successful!");
-            window.location.href = "/account/home";
+            window.location.href = "/";
         },
         error: function(xhr) {
             $("#error-message").text(xhr.responseJSON.error ? Object.values(xhr.responseJSON.error)[0] : 'Login failed.');

@@ -4,7 +4,7 @@ function fetchUserCartData() {
     if (!accessToken) {
         // Remove user credentials on logout.
         if (localStorage.getItem('eg_user')) localStorage.removeItem('eg_user');
-        window.location.href = '/account/login/';
+        window.location.href = '/login';
         return
     }
     $.ajax({
@@ -30,7 +30,7 @@ function fetchUserCartData() {
                     <div class="cart-item" data-id="${item.id}">
                         <img src="${item.product.product_image.length > 0 ? item.product.product_image[0].product_image : "/static/images/default-product-image.png"}" alt="${item.product.name}">
                         <div class="cart-item-details" data-price="${item.product.discount_percent > 0 ? getDiscountPrice(item.product.price, item.product.discount_percent) : item.product.price}">
-                            <a class="text-decoration-none text-dark" href="/items/product/?pt_id=${item.product.id}"><h5>${item.product.name}</h5></a>
+                            <a class="text-decoration-none text-dark" href="/items/product?pt_id=${item.product.id}"><h5>${item.product.name}</h5></a>
                             <p class="mb-0">Product Price: <span class="text-success">${item.product.discount_percent && item.product.price ? `&#36;${getDiscountPrice(item.product.price, item.product.discount_percent)} <del class="text-danger">&#36;${item.product.price} </del>` : `&#36;${item.product.price}`}</span></p>
                             <p class="fw-bold">Total Product Cost: <span id="cart_product_total_cost" class="text-success">$${((item.product.discount_percent > 0 ? getDiscountPrice(item.product.price, item.product.discount_percent) : item.product.price) * item.quantity).toFixed(2)}</span></p>
                         </div>
@@ -57,7 +57,7 @@ function updateOrDeleteCartItems(action, cart_container) {
     // Check access token for user login or not. Redirect to login page if not logged in.
     if (!accessToken) {
         if (localStorage.getItem('eg_user')) localStorage.removeItem('eg_user');        // Remove user credentials on logout.
-        window.location.href = '/account/login/';
+        window.location.href = '/login';
         return;
     }
 

@@ -33,11 +33,11 @@ function logout() {
     if (!accessToken) {
         // Remove user credentials on logout.
         if (localStorage.getItem('eg_user')) localStorage.removeItem('eg_user');
-        window.location.href = '/account/login/';
+        window.location.href = '/login';
         return
     }
     $.ajax({
-        url: "/account/logout/",
+        url: "/logout",
         type: "POST",
         credentials: "include",  // Send cookies with request
         headers: {
@@ -50,7 +50,7 @@ function logout() {
 
             alert(response.message);
             // Redirect to login or home page
-            window.location.href = "/account/home/";
+            window.location.href = "/";
         },
         error: function (xhr) {
             console.error("Error logging out:", xhr.responseJSON);
@@ -61,7 +61,7 @@ function logout() {
 
 async function refreshAccessToken() {
     try {
-        const response = await fetch("/account/api/token/refresh/", {
+        const response = await fetch("/api/token/refresh", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",  // Send cookies with request
@@ -70,7 +70,7 @@ async function refreshAccessToken() {
             // Clear local storage or any client-side data
             removeCookie("access_token");
             localStorage.removeItem('eg_user');
-            window.location.href = '/account/login/';
+            window.location.href = '/login';
         };
     } catch (error) {
         console.log("Error refreshing token ", error);
@@ -128,7 +128,7 @@ function addProductToCart(btn, product_id, quantity = 1, main_product = false) {
     if (!accessToken) {
         // Remove user credentials on logout.
         if (localStorage.getItem('eg_user')) localStorage.removeItem('eg_user');
-        window.location.href = '/account/login/';
+        window.location.href = '/login';
         return
     }
     $.ajax({
@@ -205,7 +205,7 @@ function displayResults(products) {
     // Build dropdown items
     products.forEach((product) => {
         const productHTML = `
-    <a class="text-decoration-none text-dark bg-light" href="/items/product/?pt_id=${product.id}">
+    <a class="text-decoration-none text-dark bg-light" href="/items/product?pt_id=${product.id}">
       <div class="dropdown-search-item">
           <strong>${product.name}</strong><br>
           <small class="text-muted">${product.description || "No description available."}</small><br>
@@ -255,7 +255,7 @@ $(document).ready(function () {
             return;
         }
         $(this).prop("disabled", true);
-        window.location.href = `/items/category/products/?search=${query}`;
+        window.location.href = `/items?search=${query}`;
     });
     // Close dropdown on clicking outside
     $(document).on("click", function (e) {
