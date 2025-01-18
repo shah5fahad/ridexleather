@@ -8,7 +8,7 @@ function fetchUserCartData() {
         return
     }
     $.ajax({
-        url: "/orders/cart-items/",
+        url: "/orders/cart-items",
         type: "GET",
         headers: {
             "Authorization": "Bearer " + accessToken, // Include the access token in the Authorization header
@@ -83,7 +83,7 @@ function updateOrDeleteCartItems(action, cart_container) {
     cart_container.find('button').attr("disabled", true);
 
     $.ajax({
-        url: `/orders/cart-item/${id}/`,
+        url: `/orders/cart-item/${id}`,
         type: `${action === "delete" ? "DELETE" : "PATCH"}`,
         headers: {
             Authorization: `Bearer ${accessToken}`,
