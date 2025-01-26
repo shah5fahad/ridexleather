@@ -176,7 +176,7 @@ function updateProductDetails(pt_id) {
             $('#product_details_container').append(`
                 <div class="product-details">
                     <div class="product-categorization">
-                        <a class="me-1" href="">Home</a>&#47;
+                        <a class="me-1" href="/">Home</a>&#47;
                         <a class="mx-1" href="/items?ct_id=${data.category.id}">${data.category.name}</a>&#47;
                         <small>${data.name}</small>
                     </div>

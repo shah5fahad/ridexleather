@@ -2,6 +2,17 @@ import base64, json
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
 from rest_framework.pagination import PageNumberPagination
+from django.core.mail import EmailMultiAlternatives
+from django.utils.html import strip_tags
+
+def send_custom_email(subject, user_emails, html_content):
+    from_email = "ridexleatherhelpdesk@gmail.com"
+    to_email = user_emails
+    text_content = strip_tags(html_content)
+    # Create email with both plain text and HTML
+    email = EmailMultiAlternatives(subject, text_content, from_email, to_email)
+    email.attach_alternative(html_content, "text/html")  # Attach HTML version
+    email.send()
 
 
 def encodeBase64Json(data):

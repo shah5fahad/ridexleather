@@ -48,13 +48,13 @@ function logout() {
             removeCookie("access_token");
             localStorage.removeItem('eg_user');
 
-            alert(response.message);
+            showAlertMessage(response.message, "success");
             // Redirect to login or home page
             window.location.href = "/";
         },
         error: function (xhr) {
-            console.error("Error logging out:", xhr.responseJSON);
-            alert("Server side error.")
+            console.error("Error logging out:", xhr.responseJSON.error);
+            showAlertMessage("Server side error.", "danger");
         }
     });
 }
@@ -186,13 +186,6 @@ function addProductToWishList(btn, product) {
     $('[data-toggle="tooltip"]').tooltip();
 }
 
-function showErrorMessage(msg, element) {
-    element.text(msg).show();
-    setTimeout(() => {
-        element.text("").hide();
-    }, 5000);
-}
-
 function displayResults(products) {
     const resultsContainer = $(".dropdown-product-search");
     resultsContainer.empty(); // Clear previous results
@@ -219,7 +212,46 @@ function displayResults(products) {
     resultsContainer.removeClass("d-none"); // Show dropdown
 }
 
+function fetchFilterCategories(filters) {
+    $.ajax({
+        url: "/items/category/search",
+        type: "GET",
+        data: filters,
+        success: function (response) {
+            $('.footer-category-section').html('');
+            let index = 0;
+            $.each(response.results, (idx, category) => {
+                if (index > 5) {return}     // Used to show only 6 category at footer
+                $('.footer-category-section').append(
+                    `<li><a href="/items?ct_id=${category.id}" class="header-category1">${category.name}</a></li>`
+                );
+                index += 1;
+            });
+        },
+        error: function (xhr) {
+            console.error("Error fetching Categories:", xhr.responseJSON);
+        },
+    });
+}
+
+function showAlertMessage(message, type) {
+    let scrollY = $(window).scrollTop();
+    let positionFromTop = scrollY + 80;
+
+    $("#alertBox .message").html(message);
+    $("#alertBox")
+        .removeClass("alert-success alert-warning alert-danger alert-info")
+        .addClass(`alert-${type}`)
+        .css("top", positionFromTop + "px")
+        .fadeIn();
+
+    setTimeout(() => {
+        $("#alertBox").fadeOut();
+    }, 5000);
+}
+
 $(document).ready(function () {
+    fetchFilterCategories({});
     let debounceTimeout;
     $(".product-search-bar").on("input", function () {
         const query = $(this).val().trim();

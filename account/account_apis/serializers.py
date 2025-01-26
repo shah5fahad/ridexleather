@@ -1,6 +1,8 @@
 from account.models import User, Profile
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
+from ridexleather.common import send_custom_email
+import pyotp
 
 
 class UserSerialzer(serializers.ModelSerializer):
@@ -70,6 +72,7 @@ class TokenObtainSerializer(TokenObtainPairSerializer):
 class RegisterUser(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True)
     password1 = serializers.CharField(write_only=True, required=True)
+    email = serializers.EmailField(max_length=300, required=False)
 
     class Meta:
         model = User
@@ -102,6 +105,34 @@ class RegisterUser(serializers.ModelSerializer):
             first_name=validated_data["first_name"],
             last_name=validated_data["last_name"],
         )
+        secret = user.generate_otp_secret()
+        otp = pyotp.TOTP(secret, interval=900).now()
+        subject = "Ridexleather Signup OTP verification"
+        html_mail_content = f'''
+            <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; text-align: center; padding: 20px;">
+                <div style="max-width: 500px; margin: auto; background: #ffffff; padding: 20px; border-radius: 8px; 
+                            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+                    <p style="color: #555;font-size: 14px;">Dear <strong>{validated_data["first_name"]}</strong>,</p>
+                    <p style="color: #555;font-size: 13px;">Thank you for signing up with <strong>Ridexleather</strong>. 
+                    Please enter the OTP below to verify your email:</p>
+                    
+                    <div style="display: inline-block; font-size: 22px; font-weight: 600;padding: 10px 20px;">
+                        {otp}
+                    </div>
+
+                    <p style="color: #888; font-size: 14px;">(This OTP is valid for <strong>15 minutes</strong>. Do not share it with anyone.)</p>
+                    <p style="color: #888; font-size: 14px;">If you did not request this, please ignore this email.</p>
+
+                    <div style="margin-top: 15px; font-size: 14px; color: #555;">
+                        <p>Need help? Contact us at <a href="mailto:ridexleatherhelpdesk@gmail.com" style="color: #007bff; text-decoration: none;">ridexleatherhelpdesk@gmail.com</a> 
+                        or visit our <a href="#" style="color: #007bff; text-decoration: none;">Help Center</a>.</p>
+                        <p style="display: inline-block;"><strong>Ridexleather</strong></p> &#124; 
+                        <p style="display: inline-block;"><a href="ridexleathers.com" style="color: #007bff; text-decoration: none;">ridexleathers.com</a></p>
+                    </div>
+                </div>
+            </div>
+        '''
+        send_custom_email(subject, [validated_data["email"]], html_mail_content)
         return user
 
 
@@ -121,8 +152,8 @@ class LoginSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Either username or email is required.")
 
         user = (
-            User.objects.filter(username=user_cred).first()
-            or User.objects.filter(email=user_cred).first()
+            User.objects.filter(username=user_cred, is_verified=True).first()
+            or User.objects.filter(email=user_cred, is_verified=True).first()
         )
 
         if not user:
