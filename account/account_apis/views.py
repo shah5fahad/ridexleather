@@ -1,10 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from account.account_apis.serializers import (
-    TokenObtainSerializer,
     RegisterUser,
     LoginSerializer,
     ProfileSerializer,
@@ -13,7 +12,6 @@ from account.models import Profile
 from rest_framework.views import APIView
 from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.renderers import TemplateHTMLRenderer
@@ -21,14 +19,42 @@ from rest_framework.exceptions import NotFound
 from django.conf import settings
 from datetime import datetime, timezone
 from ridexleather.common import encodeBase64Json, RedirectJWTAuthentication
-import os
+from rest_framework import serializers
+import os, pyotp
 
 User = get_user_model()
 SECURE_TOKEN_MODE = False
 
 
-class MyTokenObtainPairView(TokenObtainPairView):
-    serializer_class = TokenObtainSerializer
+class VerifyOTPView(APIView):
+    permission_classes = [AllowAny]
+    
+    def post(self, request):
+        email = request.data.get('email')
+        otp_entered = request.data.get('otp')
+        password = request.data.get('password')
+        password1 = request.data.get('password1', None)
+        try:
+            user = User.objects.get(email=email)
+
+            if not user.otp_secret:
+                return Response({"error": "OTP not generated"}, status=status.HTTP_400_BAD_REQUEST)
+            if password1 and password != password1:
+                return Response({"error": "Password mismatch"}, status=status.HTTP_400_BAD_REQUEST)
+            totp = pyotp.TOTP(user.otp_secret, interval=900)        # OTP valid only for 15 minutes
+
+            if totp.verify(otp_entered):
+                user.is_verified = True  # Activate user
+                user.save()
+                # Call the existing LoginView.post method
+                request.data['user_cred'] = email
+                request.data['password'] = password
+                return LoginView().post(request)
+            else:
+                return Response({"error": "Expired or Invalid OTP"}, status=status.HTTP_400_BAD_REQUEST)
+
+        except User.DoesNotExist:
+            return Response({"error": "User doesn't exits. Please Signup"}, status=status.HTTP_404_NOT_FOUND)
 
 
 class CustomTokenRefreshView(TokenRefreshView):
@@ -214,6 +240,9 @@ class ProfileAPIView(RetrieveUpdateAPIView):
     def perform_update(self, serializer):
         # Get the current profile instance
         instance = self.get_object()
+        # Prevent to store empty phone number if already save
+        if instance.mobile_number and self.request.data.get('mobile_number') is None:
+            raise serializers.ValidationError("Enter a valid phone number to update")
 
         # Check if a new profile image is being uploaded
         new_image = self.request.FILES.get("profile_image")
@@ -248,11 +277,10 @@ class LogoutView(APIView):
         return response
 
 
-class TestingView(APIView):
+class AboutPageView(APIView):
     permission_classes = [AllowAny]
     renderer_classes = [TemplateHTMLRenderer]
-    template_name = "test.html"
+    template_name = "about.html"
 
     def get(self, request):
-        # Render the login page template on GET request
         return render(request, self.template_name)

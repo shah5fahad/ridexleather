@@ -132,6 +132,9 @@ function updateCategoriesProducts(category_id, category_name, products) {
             1200: {
                 slidesPerView: 3.5,
             },
+            1600: {
+                slidesPerView: 4,
+            },
         }
     };
     Object.assign(swiperEl, swiperParams);

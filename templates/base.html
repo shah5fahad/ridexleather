@@ -12,6 +12,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <title>{% block title %}Ridex Leather{% endblock %}</title>
+    <link rel="icon" href="{% static 'images/site/site_logo.png' %}" type="image/x-icon">
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
     {% block extra_css %}{% endblock %}
 </head>
@@ -23,7 +24,14 @@
     </header>
 
     <!-- Main Content Area -->
-    <main>
+    <main>  
+        <!-- Main Alert Message -->
+        <div id="alertBox" class="alert alert-warning alert-dismissible fade show custom-alert" role="alert">
+            <div class="d-flex flex-direction-column align-items-center">
+                <div class="message"></div>
+                <button type="button" class="btn" onclick="$(this).parent().parent().fadeOut();" aria-label="Close">&#x2718;</button>
+            </div>
+        </div>
         {% block content %}{% endblock %}
     </main>
 

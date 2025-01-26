@@ -8,13 +8,6 @@ function previewImage(event) {
     reader.readAsDataURL(event.target.files[0]);
 }
 
-function showErrorMessage(msg) {
-    $('#editProfileForm #error-message').text(msg).show();
-    setTimeout(() => {
-        $('#editProfileForm #error-message').text("").hide();
-    }, 5000);
-}
-
 $(document).ready(function () {
     const profile_api_url = '/api/profile';
     const phoneNumber = document.querySelector("#phoneNumber");
@@ -59,22 +52,29 @@ $(document).ready(function () {
             }
         },
         error: function () {
-            alert('Failed to load profile data.');
+            showAlertMessage('Failed to load profile data.', 'danger');
         }
     });
 
     $('#editProfileForm').on('submit', function (e) {
-        e.preventDefault(); // Prevent default form submission
+        e.preventDefault();
+        let btn = $(this).find('button[type="submit"]');
+        btn.prop('disabled',true).html(`<i class="fa fa-spinner fa-spin me-2"></i>Update Profile`);
         
         if (phoneNumber.value !== "" && !iti.isValidNumber()) {
-            showErrorMessage("Enter a valid phone number.");
+            showAlertMessage("Enter a valid phone number.", "danger");
+            btn.prop('disabled',false).html(`Update Profile`);
             return;
         }
 
         let formData = new FormData(this);
         // Delete image key from api if not updating
         if (!$('#editProfileForm #profileImage').val()) formData.delete('profile_image');
-        if (phoneNumber.value) formData.set('mobile_number', iti.getNumber());
+        if (phoneNumber.value) {
+            formData.set('mobile_number', iti.getNumber());
+        } else {
+            formData.delete('mobile_number');
+        }
 
         $.ajax({
             url: profile_api_url,
@@ -86,10 +86,12 @@ $(document).ready(function () {
             contentType: false,
             data: formData,
             success: function () {
-                alert('Profile updated successfully!');
+                btn.prop('disabled',false).html(`Update Profile`);
+                showAlertMessage('Profile updated successfully!', 'success');
             },
             error: function (xhr) {
-                showErrorMessage(Object.values(xhr.responseJSON)[0]);
+                btn.prop('disabled',false).html(`Update Profile`);
+                showAlertMessage(Object.values(xhr.responseJSON)[0], "danger");
             }
         });
     });

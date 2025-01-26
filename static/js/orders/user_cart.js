@@ -47,7 +47,7 @@ function fetchUserCartData() {
             $('.cart-container .cart-footer').css("display", "flex");
         },
         error: function (xhr) {
-            showErrorMessage(Object.values(xhr.responseJSON)[0], $('.cart-container #error-message'));
+            showAlertMessage(Object.values(xhr.responseJSON)[0], "danger");
         }
     });
 }
@@ -123,7 +123,7 @@ function updateOrDeleteCartItems(action, cart_container) {
             if (action !== "delete") {
                 cart_container.find('.cart_product_count').text(`${quantity}`);
             }
-            showErrorMessage(Object.values(xhr.responseJSON)[0], $('.cart-container #error-message'));
+            showAlertMessage(Object.values(xhr.responseJSON)[0], "danger");
         },
     });
 }

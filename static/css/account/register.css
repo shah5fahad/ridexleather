@@ -5,6 +5,7 @@
     padding: 20px;
     background-color: #fff;
     border-radius: 8px;
+    position: relative;
     box-shadow: 0px -1px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -32,21 +33,42 @@
     border-radius: 5px;
 }
 
-.signup_container .signup_button {
-    width: 50%;
-    padding: 10px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.signup_container .signup_button:hover {
-    background-color: #218838;
-}
-
-.signup_container .error-message {
-    color: red;
+.otp-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
+    z-index: 10;
+    display: none;
+}
+.otp-input {
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    font-size: 24px;
+    margin: 5px;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+}
+.otp-input:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.signup_container_blur::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    z-index: 5;
 }

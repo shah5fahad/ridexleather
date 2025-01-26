@@ -1,7 +1,7 @@
 $("#loginForm").submit(function(e) {
     e.preventDefault();
-
-    // Get form data
+    let btn = $(this).find('button');
+    btn.prop('disabled',true).html(`<i class="fa fa-spinner fa-spin me-2"></i>Login`);
     const loginInput = $("#loginInput").val();
     const password = $("#password").val();
 
@@ -16,12 +16,13 @@ $("#loginForm").submit(function(e) {
         contentType: "application/json",
         success: function(response) {
             localStorage.setItem('eg_user', response.user)
-            // Redirect to home or another protected page
-            alert("Login successful!");
+            showAlertMessage("Login successful!", "success");
+            btn.prop('disabled',false).html(`Login`);
             window.location.href = "/";
         },
         error: function(xhr) {
-            $("#error-message").text(xhr.responseJSON.error ? Object.values(xhr.responseJSON.error)[0] : 'Login failed.');
+            btn.prop('disabled',false).html(`Login`);
+            showAlertMessage(xhr.responseJSON.error ? Object.values(xhr.responseJSON.error)[0][0] : 'Login failed.', 'danger')
         }
     });
 });

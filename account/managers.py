@@ -14,12 +14,23 @@ class CustomUserManager(BaseUserManager):
         Create and save a user with the given email and password.
         """
         if not email:
-            raise ValueError(_("The Email must be set"))
+            raise ValueError(_("Email is required to register user."))
+        
+        email = self.normalize_email(email)
+        user = self.model.objects.filter(email=email).first()
+        # Allow user to register with otp if already registered but not verified
+        if user:
+            if user.is_verified:
+                raise ValueError(_("User already registered and verified."))
+            else:
+                # Update password for unverified user
+                user.set_password(password)
+                user.save(using=self._db)
+                return user
         if not extra_fields.get("username"):
             extra_fields.setdefault(
                 "username", email.split("@")[0][:7] + str(random.randint(100, 999))
             )
-        email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self.db)

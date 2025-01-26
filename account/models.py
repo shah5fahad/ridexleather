@@ -1,20 +1,35 @@
-import random
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from phonenumber_field.modelfields import PhoneNumberField
 from .managers import CustomUserManager
-from django.db.models.signals import post_save
+import pyotp
 
 
 class User(AbstractUser):
     email = models.EmailField(max_length=100, unique=True)
     username = models.CharField(max_length=10, unique=True, blank=True, null=True)
     last_name = models.CharField(max_length=150, default="", blank=True)
+    is_verified = models.BooleanField(default=False)  # OTP verification status
+    otp_secret = models.CharField(max_length=50, blank=True, null=True)  # Store secret key
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
     objects = CustomUserManager()
+    
+    def generate_otp_secret(self):
+        """Generate and store OTP secret key"""
+        secret = pyotp.random_base32()
+        self.otp_secret = secret
+        self.save()
+        return secret
+
+    def get_otp(self):
+        """Generate TOTP using stored secret"""
+        if self.otp_secret:
+            totp = pyotp.TOTP(self.otp_secret, interval=900)        # OTP valid only for 15 minutes
+            return totp.now()
+        return None
 
     def __str__(self):
         return self.get_full_name()
@@ -36,14 +51,3 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.user.email
-
-
-# def create_user_profile(sender, instance, created, **kwargs):
-#     if created:
-#         Profile.objects.create(user=instance)
-
-# def save_user_profile(sender, instance, **kwargs):
-#     instance.profile.save()
-
-# post_save.connect(create_user_profile, sender=User)
-# post_save.connect(save_user_profile, sender=User)
