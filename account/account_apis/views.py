@@ -18,8 +18,9 @@ from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.exceptions import NotFound
 from django.conf import settings
 from datetime import datetime, timezone
-from ridexleather.common import encodeBase64Json, RedirectJWTAuthentication
+from ridexleather.common import encodeBase64Json, RedirectJWTAuthentication, send_custom_email
 from rest_framework import serializers
+from django.core.cache import cache
 import os, pyotp
 
 User = get_user_model()
@@ -33,23 +34,25 @@ class VerifyOTPView(APIView):
         email = request.data.get('email')
         otp_entered = request.data.get('otp')
         password = request.data.get('password')
-        password1 = request.data.get('password1', None)
         try:
             user = User.objects.get(email=email)
 
             if not user.otp_secret:
                 return Response({"error": "OTP not generated"}, status=status.HTTP_400_BAD_REQUEST)
-            if password1 and password != password1:
-                return Response({"error": "Password mismatch"}, status=status.HTTP_400_BAD_REQUEST)
             totp = pyotp.TOTP(user.otp_secret, interval=900)        # OTP valid only for 15 minutes
 
             if totp.verify(otp_entered):
-                user.is_verified = True  # Activate user
-                user.save()
-                # Call the existing LoginView.post method
-                request.data['user_cred'] = email
-                request.data['password'] = password
-                return LoginView().post(request)
+                if password:
+                    user.is_verified = True  # Activate user
+                    user.save()
+                    # Call the existing LoginView.post method
+                    request.data['user_cred'] = email
+                    request.data['password'] = password
+                    return LoginView().post(request)
+                else:
+                    # OTP verified, store email in session for password reset
+                    cache.set(f"verified_{email}", True, timeout=600)
+                    return Response({"message": "OTP verified successfully."}, status=status.HTTP_200_OK)
             else:
                 return Response({"error": "Expired or Invalid OTP"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -284,3 +287,95 @@ class AboutPageView(APIView):
 
     def get(self, request):
         return render(request, self.template_name)
+
+ 
+class ForgetPasswordPageView(APIView):
+    permission_classes = [AllowAny]
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = "forget_password.html"
+
+    def get(self, request):
+        return render(request, self.template_name)
+    
+    
+class SendOTPView(APIView):
+    """
+    Sends an OTP to the user's email for password reset.
+    """
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        email = request.data.get("email", "")
+        register_user = request.data.get("register_user", "")
+        user = User.objects.filter(email=email).first()
+        if not user:
+            return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+        secret = user.generate_otp_secret()
+        otp = pyotp.TOTP(secret, interval=900).now()
+        subject = f"Ridexleather {"Signup" if register_user else "Reset Password"} OTP verification"
+        email_content = "Thank you for signing up with <strong>Ridexleather</strong>. Please enter the OTP below to verify your email" if register_user else "Thank you for being a part of <strong>Ridexleather</strong>. Use the one-time password (OTP) below to reset your password"
+        html_mail_content = f'''
+            <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; text-align: center; padding: 20px;">
+                <div style="max-width: 500px; margin: auto; background: linear-gradient(145deg, #ffffff, #f9f9f9); padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);">
+                    <p style="color: #555; font-size: 15px; line-height: 1.6; margin-bottom: 15px;">
+                        Hi <strong>{user.first_name}</strong>, 
+                    </p>
+                    <p style="color: #666; font-size: 14px; line-height: 1.6; margin-bottom: 15px;">
+                        {email_content}:
+                    </p>
+                    <div style="display: inline-block; padding: 15px 30px; font-size: 20px; font-weight: 600; letter-spacing: 3px; color: #333; background-color: #f8f9fa; border: 1px dashed #007bff; border-radius: 5px; margin-bottom: 20px;">
+                        {otp}
+                    </div>
+                    <p style="color: #777; font-size: 14px; margin-bottom: 20px;">
+                        This OTP is valid for <strong>15 minutes</strong>. Please do not share this code with anyone for security reasons.
+                    </p>
+                    <p style="color: #888; font-size: 14px; margin-bottom: 20px;">
+                        If you did not request a password reset, you can safely ignore this email.
+                    </p>
+                    <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+                    <p style="font-size: 14px; color: #555; line-height: 1.6; margin-bottom: 15px;">
+                        Need help? Contact us at <a href="mailto:ridexleatherhelpdesk@gmail.com" style="color: #007bff; text-decoration: none;">
+                            ridexleatherhelpdesk@gmail.com</a> or visit our 
+                        <a href="#" style="color: #007bff; text-decoration: none;">Help Center</a>.
+                    </p>
+                    <p style="font-size: 14px; color: #555; line-height: 1.6;">
+                        <strong>Ridexleather</strong> | 
+                        <a href="https://www.ridexleathers.com" style="color: #007bff; text-decoration: none;">
+                            ridexleathers.com
+                        </a>
+                    </p>
+                </div>
+            </div>
+
+        '''
+        send_custom_email(subject, [email], html_mail_content)
+        return Response({"message": "OTP sent successfully."}, status=status.HTTP_200_OK)
+
+
+class ResetPasswordView(APIView):
+    """
+    Resets the user's password after OTP verification.
+    """
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        email = request.data.get("email")
+        new_password = request.data.get("password", "").strip()
+        if len(new_password) < 6:
+            return Response({"error": "Password must be at least 6 characters long."}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if not cache.get(f"verified_{email}"):
+            return Response({"error": "OTP verification required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = User.objects.filter(email=email).first()
+        if not user:
+            return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        user.set_password(new_password)
+        user.save()
+
+        # Clear session after password reset
+        cache.delete(f"verified_{email}")
+
+        return Response({"message": "Password reset successfully."}, status=status.HTTP_200_OK)

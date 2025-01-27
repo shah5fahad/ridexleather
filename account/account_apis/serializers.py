@@ -86,7 +86,7 @@ class RegisterUser(serializers.ModelSerializer):
     def validate_password(self, password):
         if len(password) < 6:
             raise serializers.ValidationError(
-                "Password must be at least 8 characters long."
+                "Password must be at least 6 characters long."
             )
         if not any(char.isdigit() for char in password):
             raise serializers.ValidationError(

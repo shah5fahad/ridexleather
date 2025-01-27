@@ -13,7 +13,10 @@ urlpatterns = [
     path("login", views.LoginView.as_view(), name="login"),
     path("logout", views.LogoutView.as_view(), name="logout"),
     path("profile", views.ProfilePageView.as_view(), name="profile"),
+    path("about", views.AboutPageView.as_view(), name="about"),
+    path("forget_password", views.ForgetPasswordPageView.as_view(), name="forget_password"),
     path("api/profile", views.ProfileAPIView.as_view(), name="profile_api"),
-    path("about", views.AboutPageView.as_view(), name="test"),
     path("api/verify_otp", views.VerifyOTPView.as_view(), name="otp_verify"),
+    path("api/send_otp", views.SendOTPView.as_view(), name="send_otp"),
+    path("api/reset_password", views.ResetPasswordView.as_view(), name="reset_password"),
 ]
