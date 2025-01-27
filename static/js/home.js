@@ -70,7 +70,7 @@ function updateCategoriesProducts(category_id, category_name, products) {
     if (products.length === 0) return;
     let products_html = ''
     let wishlist = localStorage.getItem('wishlist');
-    if (wishlist) wishlist =  JSON.parse(atob(wishlist));
+    if (wishlist) wishlist =  decodeStringToObject(wishlist);
     else wishlist = {};
     products.forEach((product) => {
         products_html += `
@@ -88,7 +88,7 @@ function updateCategoriesProducts(category_id, category_name, products) {
                                 <button class="btn ${product.cart_items.length === 0 ? 'btn-outline-secondary' : 'btn-secondary'}" ${product.cart_items.length === 0 ? `onclick="addProductToCart(this, ${product.id})"` : 'disabled'}><i class="fa fa-shopping-cart" aria-hidden="true"></i></button>
                             </div>
                             <div class="d-inline-block" ${wishlist.hasOwnProperty(product.id) ? 'data-toggle="tooltip" data-placement="top" title="The Wishlist already have the product."' : ''}>
-                                <button class="btn ${wishlist.hasOwnProperty(product.id) ? 'btn-danger' : 'btn-outline-danger'}" ${wishlist.hasOwnProperty(product.id) ? 'disabled' : `onclick="addProductToWishList(this, '${btoa(JSON.stringify(product))}')"`}><i class="fa fa-heart" aria-hidden="true"></i></button>
+                                <button class="btn ${wishlist.hasOwnProperty(product.id) ? 'btn-danger' : 'btn-outline-danger'}" ${wishlist.hasOwnProperty(product.id) ? 'disabled' : `onclick="addProductToWishList(this, '${encodeDataToString(product)}')"`}><i class="fa fa-heart" aria-hidden="true"></i></button>
                             </div>
                         </div>
                     </div>

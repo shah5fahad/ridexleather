@@ -46,6 +46,8 @@ $(document).ready(function () {
                     let allFilled = inputs.toArray().every(input => input.value !== "");
                     $("#verify-otp-btn").prop("disabled", !allFilled);
                 });
+                // Show resend otp option
+                startTimer();
             },
             error: function(xhr) { 
                 btn.prop('disabled',false).html(`Signup`);
@@ -87,5 +89,27 @@ $(document).ready(function () {
                 showAlertMessage(xhr.responseJSON.error ? xhr.responseJSON.error : 'OTP varification failed.', "danger");
             }
         });             
-    })
+    });
+    $("#resendBtn").on("click", () => {        
+        $('#resendBtn').hide();
+        $('#resend_otp_timer').html('<i class="fa fa-spinner fa-spin me-2"></i>Wait').show();
+        $.ajax({
+            url: "/api/send_otp",
+            type: "POST",
+            data: { 
+                email:  $("#email").val().trim(),
+                register_user: true
+            },
+            success: function(response) {   
+                $('#resend_otp_timer').html('').hide();             
+                showAlertMessage("OTP Resent Successfully!", "success");
+                startTimer();
+            },
+            error: function(xhr) {
+                $('#resend_otp_timer').html('').hide();
+                $('#resendBtn').show();
+                showAlertMessage("Error resending OTP. Please try again later.");
+            }
+        });
+    });
 });

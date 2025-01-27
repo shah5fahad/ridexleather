@@ -1,16 +1,18 @@
-/* Specific styles for the login page */
+body {
+    background: url('/static/images/site/background_image_1.jpg') no-repeat center center/cover;
+}
 .login-card {
     max-width: 400px;
     margin: 50px auto;
     padding: 20px;
-    background-color: #fff;
+    color: #000000;
     border-radius: 8px;
+    background-color: #c1d7e8c2;
     box-shadow: 0px -1px 8px rgba(0, 0, 0, 0.1);
 }
 .login-card h3 {
     margin-bottom: 20px;
     padding-bottom: 20px;
-    color: #625555;
     border-bottom: 1px solid #ddd
 }
 .login-card .form-control {
@@ -30,7 +32,6 @@
 }
 .login-card .form-label {
     font-size: 17px;
-    color: #565454;
 }
 @media (max-width: 576px) {
     .login-card {

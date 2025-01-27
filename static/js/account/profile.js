@@ -34,11 +34,11 @@ $(document).ready(function () {
                 if (key === "profile_image" && value) {
                     let eg_user = localStorage.getItem('eg_user');
                     if (eg_user) {
-                        eg_user = JSON.parse(atob(eg_user));
+                        eg_user = decodeStringToObject(eg_user);
                         if (eg_user.profile !== value) {
                             eg_user.profile = value;
                             $('.authorized_user img').attr('src', eg_user.profile);
-                            localStorage.setItem('eg_user', btoa(JSON.stringify(eg_user)));
+                            localStorage.setItem('eg_user', encodeDataToString(eg_user));
                         }
                     }
                     $('#editProfileForm .profile-image img').attr('src', value);

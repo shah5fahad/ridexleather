@@ -1,18 +1,20 @@
-/* signup.css */
+body {
+    background: url('/static/images/site/background_image_1.jpg') no-repeat center center/cover;
+}
 .signup_container {
     max-width: 500px;
     margin: 50px auto;
     padding: 20px;
-    background-color: #fff;
     border-radius: 8px;
     position: relative;
+    color: #000000;
+    background-color: #c1d7e8c2;
     box-shadow: 0px -1px 8px rgba(0, 0, 0, 0.1);
 }
 
 .signup_container h3 {
     margin-bottom: 20px;
     padding-bottom: 20px;
-    color: #625555;
     border-bottom: 1px solid #ddd
 }
 
@@ -22,7 +24,6 @@
 
 .signup_container .form-group label {
     font-size: 17px;
-    color: #565454;
 }
 
 .signup_container .form-group input {

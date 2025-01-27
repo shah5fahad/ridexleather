@@ -1,6 +1,6 @@
 function fetchUserWishlistData() {
     let wishlist = localStorage.getItem('wishlist');
-    if (wishlist) wishlist =  JSON.parse(atob(wishlist));
+    if (wishlist) wishlist =  decodeStringToObject(wishlist);
     else wishlist = {};
     let itemsHtml = '';
     $.each(wishlist, function(id, item) {
@@ -34,14 +34,14 @@ $(document).ready(function () {
         console.log("product_id",product_id);
         
         let wishlist = localStorage.getItem('wishlist');
-        if (wishlist) wishlist = JSON.parse(atob(wishlist));
+        if (wishlist) wishlist = decodeStringToObject(wishlist);
         else wishlist = {};
         for (const key in wishlist) {
             if (wishlist[key].id == product_id) {
               delete wishlist[key];
             }
         }
-        localStorage.setItem('wishlist', btoa(JSON.stringify(wishlist)));
+        localStorage.setItem('wishlist', encodeDataToString(wishlist));
         fetchUserWishlistData();
     });
 });

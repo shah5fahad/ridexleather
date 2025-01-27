@@ -76,7 +76,7 @@ function fetchFilterProducts(filters, page = 1) {
                 return;
             }
             let wishlist = localStorage.getItem('wishlist');
-            if (wishlist) wishlist = JSON.parse(atob(wishlist));
+            if (wishlist) wishlist = decodeStringToObject(wishlist);
             else wishlist = [];
             // For single category selection, show category name otherwise hide it.
             if (filters.categories && filters.categories.split(",").length === 1) $('#category_name').text($(`#category_${filters.categories}`).next().text()).parent().show();
@@ -85,7 +85,7 @@ function fetchFilterProducts(filters, page = 1) {
 
             response.results.forEach(product => {
                 $('#products_list').append(`
-                    <div class="col col-sm-6 col-md-6 col-lg-4 col-xl-4 col-xxl-3">
+                    <div class="col col-sm-6 col-md-6 col-lg-4 col-xl-4 col-xxl-3 mb-5">
                         <div class="category-product-card">
                             ${product.discount_percent ? '<div class="discount-ribbon">' + product.discount_percent + '&#37; OFF</div>' : ''}
                             <a class="category-product-image" href="/items/product?pt_id=${product.id}">
@@ -99,7 +99,7 @@ function fetchFilterProducts(filters, page = 1) {
                                         <button class="btn ${product.cart_items.length === 0 ? 'btn-outline-secondary' : 'btn-secondary'}" ${product.cart_items.length === 0 ? `onclick="addProductToCart(this, ${product.id})"` : 'disabled'}><i class="fa fa-shopping-cart" aria-hidden="true"></i></button>
                                     </div>
                                     <div class="d-inline-block" ${wishlist.hasOwnProperty(product.id) ? 'data-toggle="tooltip" data-placement="top" title="The Wishlist already have the product."' : ''}>
-                                        <button class="btn ${wishlist.hasOwnProperty(product.id) ? 'btn-danger' : 'btn-outline-danger'}" ${wishlist.hasOwnProperty(product.id) ? 'disabled' : `onclick="addProductToWishList(this, '${btoa(JSON.stringify(product))}')"`}><i class="fa fa-heart" aria-hidden="true"></i></button>
+                                        <button class="btn ${wishlist.hasOwnProperty(product.id) ? 'btn-danger' : 'btn-outline-danger'}" ${wishlist.hasOwnProperty(product.id) ? 'disabled' : `onclick="addProductToWishList(this, '${encodeDataToString(product)}')"`}><i class="fa fa-heart" aria-hidden="true"></i></button>
                                     </div>
                                 </div>
                             </div>

@@ -13,7 +13,7 @@ function setAuthLinks() {
         $('.anonymous_user').remove();
         let eg_user = localStorage.getItem('eg_user');
         if (eg_user) {
-            eg_user = JSON.parse(atob(eg_user))
+            eg_user = decodeStringToObject(eg_user);
             $('.authorized_user .user_name').text(eg_user.user_name);
             $('.authorized_user .user_email').text(eg_user.user_email);
             if (eg_user.profile) $('.authorized_user img').attr('src', eg_user.profile);
@@ -170,14 +170,14 @@ function addProductToCart(btn, product_id, quantity = 1, main_product = false) {
 
 function addProductToWishList(btn, product) {
     let wishlist = localStorage.getItem('wishlist');
-    if (wishlist) wishlist = JSON.parse(atob(wishlist));
+    if (wishlist) wishlist = decodeStringToObject(wishlist);
     else wishlist = {};
 
-    product = JSON.parse(atob(product));
+    product = decodeStringToObject(product);
     if (!wishlist.hasOwnProperty(product.id)) {
         wishlist[product.id] = product
     }
-    localStorage.setItem('wishlist', btoa(JSON.stringify(wishlist)));
+    localStorage.setItem('wishlist', encodeDataToString(wishlist));
     $(btn).parent().replaceWith(`
         <div class="d-inline-block" data-toggle="tooltip" data-placement="top" title="The Wishlist already have the product.">
             <button class="btn btn-danger" disabled><i class="fa fa-heart" aria-hidden="true"></i></button>
@@ -212,7 +212,7 @@ function displayResults(products) {
     resultsContainer.removeClass("d-none"); // Show dropdown
 }
 
-function fetchFilterCategories(filters) {
+function fetchFooterFilterCategories(filters) {
     $.ajax({
         url: "/items/category/search",
         type: "GET",
@@ -229,7 +229,7 @@ function fetchFilterCategories(filters) {
             });
         },
         error: function (xhr) {
-            console.error("Error fetching Categories:", xhr.responseJSON);
+            console.error("Error fetching Categories:", Object.values(xhr.responseJSON)[0]);
         },
     });
 }
@@ -250,8 +250,34 @@ function showAlertMessage(message, type) {
     }, 5000);
 }
 
+function encodeDataToString(customObject) {
+    return btoa(new TextEncoder().encode(JSON.stringify(customObject)).reduce((data, byte) => data + String.fromCharCode(byte), ''));
+}
+
+function decodeStringToObject(str) {
+    const bytes = new Uint8Array(atob(str).split('').map(char => char.charCodeAt(0)));
+    return JSON.parse(new TextDecoder().decode(bytes));
+}
+
+function startTimer() {
+    let countdown = 30;
+    let timerInterval;
+    $("#resend_otp_timer").show();
+    timerInterval = setInterval(() => {
+        countdown--;
+        if (countdown > 0) {
+            $("#resend_otp_timer").text(`Resend available in ${countdown} sec`);
+        } else {
+            clearInterval(timerInterval);
+            $("#resendBtn").show();
+            $("#resend_otp_timer").text("").hide();
+            countdown = 30;
+        }
+    }, 1000);
+}
+
 $(document).ready(function () {
-    fetchFilterCategories({});
+    fetchFooterFilterCategories({});
     let debounceTimeout;
     $(".product-search-bar").on("input", function () {
         const query = $(this).val().trim();

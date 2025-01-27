@@ -243,7 +243,7 @@ body {
 }
 
 .base-footer {
-    background-color: #343a40;
+    background-color: #000000db;
     color: #dcdcdc;
     padding: 40px 0;
 }
@@ -308,4 +308,8 @@ body {
 #alertBox {
     padding-right: 10px;
     padding-bottom: 10px;
+}
+
+#resendBtn:hover {
+    text-decoration: underline;
 }
