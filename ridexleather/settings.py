@@ -166,6 +166,10 @@ REST_FRAMEWORK = {
         'django_filters.rest_framework.DjangoFilterBackend',
         'rest_framework.filters.SearchFilter',
     ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '5/hour',  # 5 requests per hour for anonymous users
+        'user': '10/hour',  # 10 requests per hour for authenticated users
+    }
 }
 
 SIMPLE_JWT = {
@@ -202,3 +206,14 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "ridexleatherhelpdesk@gmail.com"
 EMAIL_HOST_PASSWORD = "cqelczufussmhryh"
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# Ensure Django picks the correct client IP
+USE_X_FORWARDED_HOST = True
+USE_X_FORWARDED_PORT = True
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake'
+    }
+}

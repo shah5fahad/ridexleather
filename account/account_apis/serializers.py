@@ -1,4 +1,4 @@
-from account.models import User, Profile
+from account.models import User, Profile, Enquiry
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from ridexleather.common import send_custom_email
@@ -164,3 +164,9 @@ class LoginSerializer(serializers.ModelSerializer):
 
         data["user"] = user
         return data
+
+
+class EnquirySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Enquiry
+        fields = "__all__"

@@ -7,10 +7,11 @@ from account.account_apis.serializers import (
     RegisterUser,
     LoginSerializer,
     ProfileSerializer,
+    EnquirySerializer,
 )
-from account.models import Profile
+from account.models import Profile, Enquiry
 from rest_framework.views import APIView
-from rest_framework.generics import RetrieveUpdateAPIView
+from rest_framework.generics import RetrieveUpdateAPIView, CreateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
@@ -19,8 +20,10 @@ from rest_framework.exceptions import NotFound
 from django.conf import settings
 from datetime import datetime, timezone
 from ridexleather.common import encodeBase64Json, RedirectJWTAuthentication, send_custom_email
+from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 from rest_framework import serializers
 from django.core.cache import cache
+from rest_framework.exceptions import Throttled
 import os, pyotp
 
 User = get_user_model()
@@ -287,6 +290,15 @@ class AboutPageView(APIView):
 
     def get(self, request):
         return render(request, self.template_name)
+    
+
+class LandingPageView(APIView):
+    permission_classes = [AllowAny]
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = "landing_page.html"
+
+    def get(self, request):
+        return render(request, self.template_name)
 
  
 class ForgetPasswordPageView(APIView):
@@ -379,3 +391,34 @@ class ResetPasswordView(APIView):
         cache.delete(f"verified_{email}")
 
         return Response({"message": "Password reset successfully."}, status=status.HTTP_200_OK)
+
+
+class EnquiryThrottle(AnonRateThrottle):
+    # Limit 5 enquiries per hour for anonymous users
+    rate = '5/hour' 
+
+class UserEnquiryThrottle(UserRateThrottle):
+    # Logged-in users can send 10 enquiries per hour
+    rate = '10/hour'
+
+class EnquiryCreateView(CreateAPIView):
+    queryset = Enquiry.objects.all()
+    serializer_class = EnquirySerializer
+    permission_classes = [AllowAny]
+    throttle_classes = [EnquiryThrottle, UserEnquiryThrottle]
+
+    def perform_create(self, serializer):
+        if self.request.user.is_authenticated:
+            serializer.save(user=self.request.user)
+        else:
+            serializer.save()
+            
+    def handle_exception(self, exc):
+        """Customize the throttling message"""
+        if isinstance(exc, Throttled):
+            wait_time = int(exc.wait) if exc.wait else 0  # Get remaining wait time
+            return Response(
+                {"detail": f"We have received you previous messages! Please wait for response or try again in {wait_time//60} minutes."},
+                status=status.HTTP_429_TOO_MANY_REQUESTS
+            )
+        return super().handle_exception(exc)

@@ -4,7 +4,7 @@
 <nav class="navbar navbar-expand-md shadow-sm">
     <div class="container-fluid">
         <!-- Logo and Brand Name -->
-        <a class="navbar-brand d-flex align-items-center header_website_logo" href="{% url 'home' %}">
+        <a class="navbar-brand d-flex align-items-center header_website_logo" href="{% url 'landing' %}">
             <img src="{% static 'images/site/site_logo.png' %}" alt="Logo" />
             <span class="website_name">Ridex<hr style="margin: 0 !important; opacity: 0.5 !important;">Leather</span>
         </a>
@@ -80,7 +80,7 @@
                 </button>
             </div>
             <!-- Menu Items -->
-            <li class="authorized_user"><a href="{% url 'home' %}"><i class="fa fa-home"></i> Home</a></li>
+            <li class="authorized_user"><a href="{% url 'landing' %}"><i class="fa fa-home"></i> Home</a></li>
             <li class="authorized_user"><a href="{% url 'profile' %}"><i class="fa fa-user"></i> Profile</a></li>
             <li class="authorized_user"><a href="{% url 'user-cart' %}"><i class="fa fa-shopping-cart"></i> My Cart</a></li>
             <li class="anonymous_user"><a href="{% url 'login' %}"><i class="fa fa-sign-in"></i> Login</a></li>

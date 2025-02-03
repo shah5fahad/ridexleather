@@ -51,3 +51,14 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.user.email
+
+
+class Enquiry(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Enquiry from {self.name} ({self.email})"
