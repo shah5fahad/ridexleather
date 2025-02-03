@@ -11,9 +11,24 @@ class ProductImageSerializer(ModelSerializer):
 
 
 class CategorySerializer(ModelSerializer):
+    product_image = serializers.SerializerMethodField()
+    
     class Meta:
         model = Category
-        fields = ["id", "name", "level"]
+        fields = ["id", "name", "level", "product_image"]
+        
+    def get_product_image(self, obj):
+        """Fetches one product image conditionally based on request argument."""
+        request = self.context.get('request')
+        include_image = request.GET.get('include_image', 'false').lower() == 'true' if request else False
+        
+        if include_image:
+            product = Product.objects.filter(category=obj).first()
+            if product:
+                image = ProductImage.objects.filter(product=product).first()
+                if image:
+                    return request.build_absolute_uri(image.product_image.url)  # Full URL
+        return None  # Return None if no image or condition not met
 
 
 class ProductSerializer(ModelSerializer):

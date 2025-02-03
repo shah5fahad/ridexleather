@@ -1,0 +1,149 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ridex Leathers</title>
+    <link rel="icon" href="/static/images/site/site_logo.png" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="{% static 'css/landing_page.css' %}"> 
+</head>
+<body>
+    <div id="top_header" class="header">
+        <div class="top-header">
+        <div class="address">
+            <i class="fas fa-map-marker-alt me-2"></i> Chamanganj Kanpur, 208001, UP, INDIA
+        </div>
+        <div class="contact_details">
+            <a class="me-2" href="tel:+919076575532"><i class="fa-solid fa-phone me-2"></i> +91 907 657 5532</a> <span class="me-2">&#124;</span>
+            <a class="" href="mailto:ridexleatherhelpdesk@gmail.com"><i class="fa fa-envelope me-2" aria-hidden="true"></i>ridexleatherhelpdesk@gmail.com</a>
+        </div>
+        </div>
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container">
+                <a class="navbar-brand" href="/home"><img src="/static/images/site/site_logo.png" alt="Logo"></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto" style="font-weight: 600;">
+                        <li class="nav-item me-2"><a class="nav-link" href="/home">PRODUCTS</a></li>
+                        <li class="nav-item me-2"><a class="nav-link" href="#about_section">ABOUT US</a></li>
+                        <li class="nav-item me-2"><a class="nav-link" href="/about#shipping_policy">SHIPPING POLICY</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#contact_us">CONTACT US</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <div class="banner-container">
+        <!-- First Image -->
+        <img src="/static/images/site/homepage_img_1.jpg" alt="Slide 1">
+        <!-- Second Image -->
+        <img src="/static/images/site/homepage_img_2.jpg" alt="Slide 2">
+        <!-- Third Image -->
+        <img src="/static/images/site/homepage_img_3.jpg" alt="Slide 3">
+        <!-- Fourth Image -->
+        <img src="/static/images/site/homepage_img_4.jpg" alt="Slide 4">
+        <!-- Text Container over image -->
+        <div class="text-container">
+            <div class="text-welcome">WELCOME <br> <span class="mt-3 fs-5">TO</span></div>
+            <div class="text-brand">Ridex Leathers</div>
+            <div class="text-details">Deal With Premium Quality Leather Products.</div>
+            <a href="/home" class="text-product-button">Shop Now</a>
+        </div>
+    </div>
+    <section id="categories_section" style="background-color: #07145296; padding: 25px 0;">
+        <div class="collections-header">EXPLORE OUR PREMIUM COLLECTIONS</div>
+        <div class="container swiper-container categories_swiper_section">
+        </div>
+    </section>
+    <section id="about_section">
+        <div class="fs-1 text-center mb-2 fw-bold pt-5">About Us</div>
+        <div class="container fs-5 d-flex align-items-center justify-content-center text-center p-4 mb-3"><p>
+            At Ridex Leather, we are passionate about delivering premium-quality leather products tailored for equestrian enthusiasts and professionals. Specializing in horse saddles, bridles, harnesses, and other leather riding accessories, we combine craftsmanship with durability to ensure the perfect blend of comfort, style, and functionality.
+            <br><br>Our commitment to excellence is reflected in every piece we create, using only the finest leather and time-honored techniques. Whether you're a competitive rider, a casual equestrian, or a stable owner, Ridex Leather is your trusted source for superior leather gear that enhances both performance and aesthetics.
+            <br><br>Join us on a journey of quality and tradition—because at Ridex Leather, we don’t just make products, we craft experiences.</p>
+        </div>
+        <div class="container pb-3">
+            <img src="/static/images/site/about_image.png" alt="Logo" class="w-100">
+        </div>
+    </section>
+    <section id="product_section" class="row m-0" style="color: #fccc72;">
+        <div class="col-md-6 position-relative">
+            <img class="w-100" src="/static/images/demo_product_image.webp" alt="Product Image" style="max-height: 600px;">
+            <div class="position-absolute" style="right: 25px; top: 0; z-index: 1050;">
+                <img src="/static/images/site/product_batch.png" alt="Product Image" style="width: 35px;">
+            </div>
+        </div>
+        <div class="col-md-6" style="padding: 50px;">
+            <div class="fs-6 fw-bold" style="font-family: cursive;">PREMIUM PRODUCTS</div>
+            <div class="fs-4 my-3 text-light pe-md-5">Premium Horse Leather Stock for a Comfortable Ride</div>
+            <div class="text-light mt-4 mb-5 pe-md-5">Our high-quality horse leather stock is crafted for durability, comfort, and style. Made from genuine leather, it provides a secure grip and smooth seating, ensuring a comfortable riding experience. Designed for long-lasting use, our leather stocks are perfect for both professional riders and equestrian enthusiasts.</div>
+            <div class="mb-5 pb-b"><span>Start At<span><br><span class="fs-3 fw-bold">$399</span></div>
+            <a href="/home" class="text-product-button">Explore All Products</a>
+        </div>
+    </section>
+    <section id="contact_us" class="py-3">
+        <div class="container contact-container row">
+            <div class="col-md-6" style="background-color: #242f3878; font-weight: 500; color: #fccc72; border-radius: 8px; padding: 10px;">
+                <h2 class="mb-4 text-center">Contact Us</h2>
+                <form id="contactForm">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="name" placeholder="Enter your name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email address</label>
+                        <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="message" class="form-label">Message</label>
+                        <textarea class="form-control" id="message" rows="4" placeholder="Type your message here ...." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-dark w-100">Send Message</button>
+                </form>
+                <p class="text-success mt-3 text-center" id="formMessage" style="display: none;">Thank you! We will get back to you soon.</p>
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-5 mt-5 mt-md-0 site_contact_container">
+                <h4 class="mb-4">Our Contact Details</h4>
+                <p class="text-center text-light">You directly contact us using the below contact details.</p>
+                <div class="fw-bold my-2">Email</div>
+                <a class="fw-bold text-light text-decoration-none text-center" href="mailto:ridexleatherhelpdesk@gmail.com"><i class="fa fa-envelope me-2" aria-hidden="true"></i>ridexleatherhelpdesk @gmail.com</a>
+                <div class="fw-bold my-2">Number</div>
+                <a class="fw-bold text-light text-decoration-none" href="tel:+919076575532"><i class="fa-solid fa-phone me-2"></i> +91 907 657 5532</a>
+                <div class="fw-bold my-2">Address</div>
+                <div class="fw-bold text-light fw-bold text-center">
+                    <i class="fas fa-map-marker-alt"></i> Chamanganj Kanpur, 208001, UP, INDIA
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer class="base-footer">
+        <div class="text-center">
+            <p class="mb-0">© 2025 Ridexleathers. All Rights Reserved.</p>
+        </div>
+    </footer> 
+    <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/landing_page.js' %}"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+

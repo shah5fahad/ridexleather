@@ -3,7 +3,8 @@ from django.urls import path
 from account.account_apis import views
 
 urlpatterns = [
-    path("", views.HomePageView.as_view(), name="home"),
+    path("", views.LandingPageView.as_view(), name="landing"),
+    path("home", views.HomePageView.as_view(), name="home"),
     path(
         "api/token/refresh",
         views.CustomTokenRefreshView.as_view(),
@@ -19,4 +20,5 @@ urlpatterns = [
     path("api/verify_otp", views.VerifyOTPView.as_view(), name="otp_verify"),
     path("api/send_otp", views.SendOTPView.as_view(), name="send_otp"),
     path("api/reset_password", views.ResetPasswordView.as_view(), name="reset_password"),
+    path('enquiry', views.EnquiryCreateView.as_view(), name='enquiry-create'),
 ]
