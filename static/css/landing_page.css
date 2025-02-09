@@ -203,6 +203,10 @@ body::-webkit-scrollbar-thumb:hover {
     .contact_details {
         text-align: center;
     }
+    .middle_product_container {
+        display: flex;
+        flex-direction: column-reverse;
+    }
 }
 
 @media only screen and (max-width: 576px) {
@@ -354,3 +358,27 @@ body::-webkit-scrollbar-thumb:hover {
     color: #dcdcdc;
     padding: 20px 0;
 }
+
+.whatsapp-chat-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 120px;
+    height: 60px;
+    background-color: #25D366; /* WhatsApp green */
+    color: #fff;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1050;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+  }
+
+  .whatsapp-chat-btn:hover {
+    background-color: #1ebc59;
+    color: #fccc72;
+  }

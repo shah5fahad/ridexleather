@@ -151,4 +151,17 @@ $(document).ready(function () {
             }
         });
     });
+
+    // Toggle password
+    $('.password-toggle-icon').on('click', function() {
+        const inputField = $(this).parent().find('input');
+        // Toggle the type attribute
+        if (inputField.attr('type') === 'password') {
+            inputField.attr('type', 'text');
+            $(this).removeClass('fa-eye').addClass('fa-eye-slash');
+        } else {
+            inputField.attr('type', 'password');
+            $(this).removeClass('fa-eye-slash').addClass('fa-eye');
+        }
+    });
 });

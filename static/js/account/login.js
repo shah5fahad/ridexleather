@@ -16,13 +16,25 @@ $("#loginForm").submit(function(e) {
         contentType: "application/json",
         success: function(response) {
             localStorage.setItem('eg_user', response.user)
-            showAlertMessage("Login successful!", "success");
+            showAlertMessage("Logged in successful!", "success");
             btn.prop('disabled',false).html(`Login`);
-            window.location.href = "/";
+            window.location.href = "/home";
         },
         error: function(xhr) {
             btn.prop('disabled',false).html(`Login`);
             showAlertMessage(xhr.responseJSON.error ? Object.values(xhr.responseJSON.error)[0][0] : 'Login failed.', 'danger')
         }
     });
+});
+
+$('.password-toggle-icon').on('click', function() {
+    const inputField = $(this).parent().find('input');
+    // Toggle the type attribute
+    if (inputField.attr('type') === 'password') {
+        inputField.attr('type', 'text');
+        $(this).removeClass('fa-eye').addClass('fa-eye-slash');
+    } else {
+        inputField.attr('type', 'password');
+        $(this).removeClass('fa-eye-slash').addClass('fa-eye');
+    }
 });

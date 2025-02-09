@@ -203,8 +203,8 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = "ridexleatherhelpdesk@gmail.com"
-EMAIL_HOST_PASSWORD = "cqelczufussmhryh"
+EMAIL_HOST_USER = "demo@xyz.com"
+EMAIL_HOST_PASSWORD = "xxxxxxxxxxxxxxxxxxx"
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # Ensure Django picks the correct client IP

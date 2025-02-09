@@ -16,13 +16,13 @@
             <label for="loginInput" class="form-label">Username or Email address</label>
             <input type="loginInput" class="form-control" id="loginInput" name="loginInput" placeholder="Enter your email or username" required>
         </div>
-        <div class="mb-3">
+        <div class="password-container">
             <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+            <input type="password" class="form-control mb-1" id="password" name="password" placeholder="Enter your password" required>
+            <i class="fas fa-eye password-toggle-icon"></i>
         </div>
-        <div class="mb-3 form-check">
-            <input type="checkbox" class="form-check-input" id="rememberMe">
-            <label class="form-check-label" for="rememberMe">Remember Me</label>
+        <div class="text-end">
+            <p><a href="/forget_password" class="text-primary text-decoration-none" style="font-weight: 500;">Forgot Password?</a></p>
         </div>
         <div class="text-center">
             <button type="submit" class="btn btn-primary w-50">Login</button>
@@ -31,7 +31,6 @@
     <hr>
     <div class="text-center">
         <p class="mb-0">Don't have an account? <a href="{% url 'register' %}" class="text-primary text-decoration-none">Sign Up</a></p>
-        <p><a href="/forget_password" class="text-primary text-decoration-none">Forgot Password?</a></p>
     </div>
 </div>
 {% endblock %}

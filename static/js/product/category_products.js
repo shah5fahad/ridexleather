@@ -198,7 +198,7 @@ $(document).ready(function () {
     let debounceFilterTimeout;
     const searchParams = new URLSearchParams(window.location.search);
     if (!(searchParams.has('ct_id') || searchParams.has('search'))) {
-        window.location.href = "/";
+        window.location.href = "/home";
     }
     // Fetch all products initially
     fetchFilterCategories({});

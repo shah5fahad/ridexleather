@@ -49,8 +49,8 @@ function logout() {
             localStorage.removeItem('eg_user');
 
             showAlertMessage(response.message, "success");
-            // Redirect to login or home page
-            window.location.href = "/";
+            // Redirect to home page
+            window.location.href = "/home";
         },
         error: function (xhr) {
             console.error("Error logging out:", xhr.responseJSON.error);
