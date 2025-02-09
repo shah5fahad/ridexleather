@@ -1,0 +1,77 @@
+body {
+    font-family: "Poppins", serif;
+    background-color: #f7f7f7;
+}
+
+.header_navbar {
+    background-color: #80808057;
+}
+
+.header_website_logo img {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+}
+
+#refund_policy {
+    background-color: #f7f7f7;
+    color: #333;
+}
+
+#refund_policy header {
+    margin-bottom: 2rem;
+}
+
+h1,
+h2,
+h3 {
+    color: black;
+}
+
+.policy-section {
+    background: #fff;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.list-group-item {
+    border: none;
+    padding: 0.5rem 0;
+    background-color: transparent;
+}
+
+.list-group-item:not(:last-child) {
+    border-bottom: 1px solid #e9ecef;
+}
+
+.base-footer {
+    color: #fff;
+    padding: 20px 0;
+    background-color: black;
+}
+
+#term_and_condition {
+    background-color: black;
+}
+
+.terms-container {
+    color: #fccc72;
+    padding: 40px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.terms-container h2,
+.terms-container h5 {
+    color: #fff;
+}
+
+.section {
+    margin-bottom: 20px;
+}
+
+.accordion-body {
+    background-color: #f7f7f7;
+}

@@ -140,7 +140,7 @@ class RegisterUserView(APIView):
     def get(self, request):
         # Redirect to home page if already logged in
         if request.COOKIES.get("access_token"):
-            return redirect("/")
+            return redirect("/home")
         return render(request, self.template_name)
 
     def post(self, request):
@@ -162,7 +162,7 @@ class LoginView(APIView):
     def get(self, request):
         # Redirect to home page if already logged in
         if request.COOKIES.get("access_token"):
-            return redirect("/")
+            return redirect("/home")
         # Render the login page template on GET request
         return render(request, self.template_name)
 
@@ -281,15 +281,6 @@ class LogoutView(APIView):
         if refresh_token:
             response.delete_cookie("refresh_token")
         return response
-
-
-class AboutPageView(APIView):
-    permission_classes = [AllowAny]
-    renderer_classes = [TemplateHTMLRenderer]
-    template_name = "about.html"
-
-    def get(self, request):
-        return render(request, self.template_name)
     
 
 class LandingPageView(APIView):
@@ -305,6 +296,42 @@ class ForgetPasswordPageView(APIView):
     permission_classes = [AllowAny]
     renderer_classes = [TemplateHTMLRenderer]
     template_name = "forget_password.html"
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+
+class RefundPolicyPageView(APIView):
+    permission_classes = [AllowAny]
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = "refund_policy.html"
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+
+class ShippingPolicyPageView(APIView):
+    permission_classes = [AllowAny]
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = "shipping_policy.html"
+
+    def get(self, request):
+        return render(request, self.template_name)
+    
+    
+class TermsAndConditionPageView(APIView):
+    permission_classes = [AllowAny]
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = "terms_and_condition.html"
+
+    def get(self, request):
+        return render(request, self.template_name)
+    
+    
+class PrivacyPolicyPageView(APIView):
+    permission_classes = [AllowAny]
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = "privacy_policy.html"
 
     def get(self, request):
         return render(request, self.template_name)

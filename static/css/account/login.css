@@ -38,3 +38,15 @@ body {
         padding: 20px;
     }
 }
+.password-container {
+    position: relative;
+}
+.password-toggle-icon {
+    position: absolute;
+    top: 55px;
+    right: 15px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 18px;
+    color: #333333a8;
+}

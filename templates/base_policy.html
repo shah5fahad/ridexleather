@@ -1,0 +1,49 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <title>{% block title %}Ridex Leather{% endblock %}</title>
+    <link rel="icon" href="{% static 'images/site/site_logo.png' %}" type="image/x-icon">
+    <link rel="stylesheet" href="{% static 'css/main_policy.css' %}">
+</head>
+<body>
+    <header class="header_navbar">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center header_website_logo" href="/">
+                    <img src="/static/images/site/site_logo.png" alt="Logo" >
+                    <span class="website_name">Ridex<hr style="margin: 0 !important; opacity: 0.5 !important;">Leather</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto" style="font-weight: 500;">
+                        <li class="nav-item"><a class="nav-link me-1" href="/shipping_policy">SHIPPING POLICY</a></li>
+                        <li class="nav-item"><a class="nav-link me-1" href="/terms_and_condition#term_and_condition">TERMS &#x26; CONDITION</a></li>
+                        <li class="nav-item"><a class="nav-link me-1" href="/refund_policy">REFUND POLICY</a></li>
+                        <li class="nav-item"><a class="nav-link me-1" href="/privacy_policy">PRIVACY POLICY</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/#contact_us">CONTACT US</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main>  
+        {% block content %}{% endblock %}
+    </main>
+    <footer class="base-footer">
+        <div class="text-center">
+            <p class="mb-0">© 2025 Ridexleathers. All Rights Reserved.</p>
+        </div>
+    </footer> 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
