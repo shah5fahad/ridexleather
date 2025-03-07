@@ -219,5 +219,5 @@ CACHES = {
     }
 }
 
-CURRENCY_CONVERTER_API_URL = 'https://api.currencyapi.com/v3/latest'
+CURRENCY_CONVERTER_API_URL = 'https://api.currencyapi.com/v3/latest/test'
 CURRENCY_CONVERTER_API_KEY = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
