@@ -23,7 +23,8 @@ function fetchUserCartData() {
             }
 
             let itemsHtml = '';
-            let total = 0;              
+            let total = 0;
+            let currency = getCookie('currency') || "USD";          
             response.forEach(item => {
                 total += (item.product.discount_percent > 0 ? getDiscountPrice(item.product.price, item.product.discount_percent) : item.product.price) * item.quantity;
                 itemsHtml += `
@@ -31,8 +32,8 @@ function fetchUserCartData() {
                         <img src="${item.product.product_image.length > 0 ? item.product.product_image[0].product_image : "/static/images/default-product-image.png"}" alt="${item.product.name}">
                         <div class="cart-item-details" data-price="${item.product.discount_percent > 0 ? getDiscountPrice(item.product.price, item.product.discount_percent) : item.product.price}">
                             <a class="text-decoration-none text-dark" href="/items/product?pt_id=${item.product.id}"><h5>${item.product.name}</h5></a>
-                            <p class="mb-0">Product Price: <span class="text-success">${item.product.discount_percent && item.product.price ? `&#36;${getDiscountPrice(item.product.price, item.product.discount_percent)} <del class="text-danger">&#36;${item.product.price} </del>` : `&#36;${item.product.price}`}</span></p>
-                            <p class="fw-bold">Total Product Cost: <span id="cart_product_total_cost" class="text-success">$${((item.product.discount_percent > 0 ? getDiscountPrice(item.product.price, item.product.discount_percent) : item.product.price) * item.quantity).toFixed(2)}</span></p>
+                            <p class="mb-0">Product Price: <span class="text-success">${item.product.discount_percent && item.product.price ? `${CURRENCY_HTML_CODES[currency]}${getDiscountPrice(item.product.price, item.product.discount_percent)} <del class="text-danger">${CURRENCY_HTML_CODES[currency]}${item.product.price} </del>` : `${CURRENCY_HTML_CODES[currency]}${item.product.price}`}</span></p>
+                            <p class="fw-bold">Total Product Cost: <span id="cart_product_total_cost" class="text-success">${CURRENCY_HTML_CODES[currency]}${((item.product.discount_percent > 0 ? getDiscountPrice(item.product.price, item.product.discount_percent) : item.product.price) * item.quantity).toFixed(2)}</span></p>
                         </div>
                         <div class="cart-item-controls">
                             <button class="btn btn-outline-primary cart_product_count_decrease" ${item.quantity == 1 ? 'disabled' : ''}>-</button>
@@ -43,7 +44,7 @@ function fetchUserCartData() {
                     </div>`;
             });
             $('#cart-items').html(itemsHtml);
-            $('#total-amount').text(`Total: $${total.toFixed(2)}`);
+            $('#total-amount').html(`Total: ${CURRENCY_HTML_CODES[currency]}${total.toFixed(2)}`);
             $('.cart-container .cart-footer').css("display", "flex");
         },
         error: function (xhr) {

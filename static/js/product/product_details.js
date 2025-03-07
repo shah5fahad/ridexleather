@@ -5,6 +5,7 @@ function updateCategoriesProducts(category_id, product_id) {
         url: apiURL,
         method: 'GET',
         success: function(data) {
+            let currency = getCookie('currency') || "USD";
             let products = data.product;
             let products_html = ''
             let wishlist = localStorage.getItem('wishlist');
@@ -21,7 +22,7 @@ function updateCategoriesProducts(category_id, product_id) {
                             </a>
                             <div class="category-product-name"><p>${product.name}</p></div>
                             <div class="category-product-footer">
-                                <div class="category-product-price">${product.discount_percent && product.price ? `&#36;${getDiscountPrice(product.price, product.discount_percent)} <del>&#36;${product.price} </del>` : `&#36;${product.price}`}</div>
+                                <div class="category-product-price">${product.discount_percent && product.price ? `${CURRENCY_HTML_CODES[currency]}${getDiscountPrice(product.price, product.discount_percent)} <del>${CURRENCY_HTML_CODES[currency]}${product.price} </del>` : `${CURRENCY_HTML_CODES[currency]}${product.price}`}</div>
                                 <div class="category-product-buttons">
                                     <div class="d-inline-block" ${product.cart_items.length === 0 ? '' : 'data-toggle="tooltip" data-placement="top" title="Product already added in the cart."'}>
                                         <button class="btn ${product.cart_items.length === 0 ? 'btn-outline-secondary' : 'btn-secondary'}" ${product.cart_items.length === 0 ? `onclick="addProductToCart(this, ${product.id})"` : 'disabled'}><i class="fa fa-shopping-cart" aria-hidden="true"></i></button>
@@ -132,6 +133,7 @@ function updateProductDetails(pt_id) {
                 first_image = '/static/images/default-product-image.png';
                 image_html += `<img src="${first_image}" alt="${data.name + ' image ' + 1}">`
             }
+            let currency = getCookie('currency') || "USD";
             let wishlist = localStorage.getItem('wishlist');
             if (wishlist) wishlist =  decodeStringToObject(wishlist);
             else wishlist = [];
@@ -181,7 +183,7 @@ function updateProductDetails(pt_id) {
                         <small>${data.name}</small>
                     </div>
                     <div class="main-product-name">${data.name}</div>
-                    <div><span class="fw-bold">${data.discount_percent && data.price ? `<span class="text-success fs-4">&#36;${getDiscountPrice(data.price, data.discount_percent)}</span> <del class="text-danger">&#36;${data.price} </del><span class="ps-2 fs-5 text-dark">(${data.discount_percent}&#37; OFF)</span>` : `<span class="fs-5 text-secondary">&#36;${data.price}`}</span></div>
+                    <div><span class="fw-bold">${data.discount_percent && data.price ? `<span class="text-success fs-4">${CURRENCY_HTML_CODES[currency]}${getDiscountPrice(data.price, data.discount_percent)}</span> <del class="text-danger">${CURRENCY_HTML_CODES[currency]}${data.price} </del><span class="ps-2 fs-5 text-dark">(${data.discount_percent}&#37; OFF)</span>` : `<span class="fs-5 text-secondary">${CURRENCY_HTML_CODES[currency]}${data.price}`}</span></div>
                     <div class="d-flex justify-content-between mt-3">
                         ${data.cart_items.length === 0 
                             ? `<button class="btn btn-outline-primary" onclick="addProductToCart(this, ${data.id}, 1, true)">Add to Cart</button>` 

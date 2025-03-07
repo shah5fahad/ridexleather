@@ -68,6 +68,7 @@ function updateBanners() {
 
 function updateCategoriesProducts(category_id, category_name, products) {
     if (products.length === 0) return;
+    let currency = getCookie('currency') || "USD";
     let products_html = ''
     let wishlist = localStorage.getItem('wishlist');
     if (wishlist) wishlist =  decodeStringToObject(wishlist);
@@ -82,7 +83,7 @@ function updateCategoriesProducts(category_id, category_name, products) {
                     </a>
                     <div class="category-product-name"><p>${product.name}</p></div>
                     <div class="category-product-footer">
-                        <div class="category-product-price">${product.discount_percent && product.price ? `&#36;${getDiscountPrice(product.price, product.discount_percent)} <del>&#36;${product.price} </del>` : `&#36;${product.price}`}</div>
+                        <div class="category-product-price">${product.discount_percent && product.price ? `${CURRENCY_HTML_CODES[currency]}${getDiscountPrice(product.price, product.discount_percent)} <del>${CURRENCY_HTML_CODES[currency]}${product.price} </del>` : `${CURRENCY_HTML_CODES[currency]}${product.price}`}</div>
                         <div class="category-product-buttons">
                             <div class="d-inline-block" ${product.cart_items.length === 0 ? '' : 'data-toggle="tooltip" data-placement="top" title="Product already added in the cart."'}>
                                 <button class="btn ${product.cart_items.length === 0 ? 'btn-outline-secondary' : 'btn-secondary'}" ${product.cart_items.length === 0 ? `onclick="addProductToCart(this, ${product.id})"` : 'disabled'}><i class="fa fa-shopping-cart" aria-hidden="true"></i></button>
