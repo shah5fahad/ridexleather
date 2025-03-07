@@ -1,3 +1,8 @@
+const CURRENCY_HTML_CODES = {
+    "USD": "&#36;",
+    "INR": "&#8377;"
+}
+
 function getCookie(name) {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
@@ -24,7 +29,9 @@ function setAuthLinks() {
 }
 
 function getDiscountPrice(original_price, discount_percent) {
-    return (original_price * ((100 - discount_percent) / 100)).toFixed(2);
+    let decimal_val = 2
+    if (getCookie('currency') === 'INR') decimal_val=0;
+    return (original_price * ((100 - discount_percent) / 100)).toFixed(decimal_val);
 }
 
 function logout() {
@@ -320,5 +327,16 @@ $(document).ready(function () {
         if (!$(e.target).closest(".product-search-bar, .dropdown-product-search").length) {
             $(".dropdown-product-search").addClass("d-none");
         }
+    });
+    // Update selected currency data on change
+    let selectedCurrency = getCookie("currency") || "USD";
+    $("#currencySelector").val(selectedCurrency);
+
+    $("#currencySelector").on("change", function () {
+        let newCurrency = $(this).val();
+        let date = new Date();
+        date.setTime(date.getTime()+(60*60*1000));  // Cookies expire in 60 minutes
+        document.cookie = `currency=${newCurrency}; expires=${date.toGMTString()};path=/`;
+        location.reload();  // Reload page to apply changes
     });
 });

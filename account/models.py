@@ -62,3 +62,12 @@ class Enquiry(models.Model):
 
     def __str__(self):
         return f"Enquiry from {self.name} ({self.email})"
+
+
+class WebsiteGeneralConfiguration(models.Model):
+    meta_key = models.CharField(max_length=100, unique=True)
+    meta_value = models.CharField(max_length=255)
+    date_modified = models.DateField(auto_now=True)
+    
+    def __str__(self):
+        return f"Website General Config"

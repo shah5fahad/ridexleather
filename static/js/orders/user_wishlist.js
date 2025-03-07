@@ -1,4 +1,5 @@
 function fetchUserWishlistData() {
+    let currency = getCookie('currency') || "USD";
     let wishlist = localStorage.getItem('wishlist');
     if (wishlist) wishlist =  decodeStringToObject(wishlist);
     else wishlist = {};
@@ -10,7 +11,7 @@ function fetchUserWishlistData() {
                 <div class="wishlist-item-details" data-price="${item.discount_percent > 0 ? getDiscountPrice(item.price, item.discount_percent) : item.price}">
                     <a class="text-decoration-none text-dark" href="/items/product?pt_id=${item.id}">
                         <h5>${item.name}</h5>
-                        <p class="mb-0">Product Price: <span class="text-success">${item.discount_percent && item.price ? `&#36;${getDiscountPrice(item.price, item.discount_percent)} <del class="text-danger">&#36;${item.price} </del>` : `&#36;${item.price}`}</span></p>
+                        <p class="mb-0">Product Price: <span class="text-success">${item.discount_percent && item.price ? `${CURRENCY_HTML_CODES[currency]}${getDiscountPrice(item.price, item.discount_percent)} <del class="text-danger">${CURRENCY_HTML_CODES[currency]}${item.price} </del>` : `${CURRENCY_HTML_CODES[currency]}${item.price}`}</span></p>
                     </a>
                 </div>
                 <div class="wishlist-item-controls">

@@ -56,6 +56,7 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "middleware.general.StripTrailingSlashMiddleware",
+    "middleware.general.UpdateCurrencyValueMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -217,3 +218,6 @@ CACHES = {
         'LOCATION': 'unique-snowflake'
     }
 }
+
+CURRENCY_CONVERTER_API_URL = 'https://api.currencyapi.com/v3/latest'
+CURRENCY_CONVERTER_API_KEY = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'

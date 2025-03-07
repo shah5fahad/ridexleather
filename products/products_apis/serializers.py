@@ -1,7 +1,9 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
 from products.models import Product, Category, ProductImage, WebsiteBanner
+from account.models import WebsiteGeneralConfiguration
 from orders.models import CartItems
+from django.core.cache import cache
 
 
 class ProductImageSerializer(ModelSerializer):
@@ -34,6 +36,7 @@ class CategorySerializer(ModelSerializer):
 class ProductSerializer(ModelSerializer):
     product_image = serializers.SerializerMethodField()
     cart_items = serializers.SerializerMethodField()
+    price = serializers.SerializerMethodField()
     category = CategorySerializer()
 
     class Meta:
@@ -55,6 +58,22 @@ class ProductSerializer(ModelSerializer):
                     "quantity": cart_item[0].quantity
                 }]
         return []
+
+    def get_price(self, obj):
+        request = self.context.get("request")
+        selectedCurrency = request.COOKIES.get("currency", "USD")
+        if selectedCurrency !=  "USD":
+            try:
+                rate = cache.get(f"currency_rate_{selectedCurrency}")
+                if rate is None:
+                    rate = WebsiteGeneralConfiguration.objects.filter(meta_key=selectedCurrency).values_list("meta_value", flat=True).first()
+                    if not rate:
+                        rate = 1
+                new_price = float(rate) * float(obj.price)
+                return round(new_price)
+            except:
+                return obj.price
+        return obj.price  
     
     def __init__(self, *args, **kwargs):
         include = kwargs.pop('include', None)
