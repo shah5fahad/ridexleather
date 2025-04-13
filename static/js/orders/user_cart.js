@@ -16,7 +16,7 @@ function fetchUserCartData() {
         success: function (response) {
             if (response.length === 0) {
                 $('.cart-container .cart-footer').replaceWith(`
-                    <div class="text-center text-secondary fs-5 my-3"><i class="fa-solid fa-cart-plus fs-1 py-2"></i><br>No products added in your Cart.</div>
+                    <div class="text-center text-secondary fs-5 my-5"><i class="fa-solid fa-cart-plus fs-1 py-2"></i><br>No products added in your Cart.</div>
                 `);
                 $('#cart-items').html("");
                 return;
@@ -28,8 +28,8 @@ function fetchUserCartData() {
             response.forEach(item => {
                 total += (item.product.discount_percent > 0 ? getDiscountPrice(item.product.price, item.product.discount_percent) : item.product.price) * item.quantity;
                 itemsHtml += `
-                    <div class="cart-item" data-id="${item.id}">
-                        <img src="${item.product.product_image.length > 0 ? item.product.product_image[0].product_image : "/static/images/default-product-image.png"}" alt="${item.product.name}">
+                    <div class="cart-item" data-details="${encodeDataToString([item.id, item.product.id, item.quantity])}">
+                        <a class="text-decoration-none text-dark" href="/items/product?pt_id=${item.product.id}"><img src="${item.product.product_image.length > 0 ? item.product.product_image[0].product_image : "/static/images/default-product-image.png"}" alt="${item.product.name}"></a>
                         <div class="cart-item-details" data-price="${item.product.discount_percent > 0 ? getDiscountPrice(item.product.price, item.product.discount_percent) : item.product.price}">
                             <a class="text-decoration-none text-dark" href="/items/product?pt_id=${item.product.id}"><h5>${item.product.name}</h5></a>
                             <p class="mb-0">Product Price: <span class="text-success">${item.product.discount_percent && item.product.price ? `${CURRENCY_HTML_CODES[currency]}${getDiscountPrice(item.product.price, item.product.discount_percent)} <del class="text-danger">${CURRENCY_HTML_CODES[currency]}${item.product.price} </del>` : `${CURRENCY_HTML_CODES[currency]}${item.product.price}`}</span></p>
@@ -63,7 +63,11 @@ function updateOrDeleteCartItems(action, cart_container) {
     }
 
     // Get the cart ID
-    const id = cart_container.data('id');
+    let cart_details = cart_container.data('details');
+    let id = null;
+    if (cart_details) {
+        id = decodeStringToObject(cart_details)[0];        
+    }
     if (!id) {
         alert("Cart id is not found.");
         return;
@@ -82,6 +86,7 @@ function updateOrDeleteCartItems(action, cart_container) {
     }
 
     cart_container.find('button').attr("disabled", true);
+    let currency = getCookie('currency') || "USD";
 
     $.ajax({
         url: `/orders/cart-item/${id}`,
@@ -96,7 +101,7 @@ function updateOrDeleteCartItems(action, cart_container) {
                 cart_container.remove();
                 if ($('.cart-container .cart-item').length === 0) {
                     $('.cart-container .cart-footer').replaceWith(`
-                        <div class="text-center text-secondary fs-5 my-3"><i class="fa-solid fa-cart-plus fs-1 py-2"></i><br>No products added in your Cart.</div>
+                        <div class="text-center text-secondary fs-5 my-5"><i class="fa-solid fa-cart-plus fs-1 py-2"></i><br>No products added in your Cart.</div>
                     `);
                     $('#cart-items').html("");
                     return;
@@ -105,8 +110,8 @@ function updateOrDeleteCartItems(action, cart_container) {
                 cart_container.find('button').attr("disabled", false);
                 if (action === "decrease" && quantity <= 2) {
                     cart_container.find('.cart_product_count_decrease').attr("disabled", true);
-                }                
-                cart_container.find('#cart_product_total_cost').html(`$${((parseFloat(cart_container.find('.cart-item-details').data('price')) || 0) * response.quantity).toFixed(2)}`);
+                }          
+                cart_container.find('#cart_product_total_cost').html(`${CURRENCY_HTML_CODES[currency]}${((parseFloat(cart_container.find('.cart-item-details').data('price')) || 0) * response.quantity).toFixed(2)}`);
             }
             let amount = 0
             $('.cart-container .cart-item').each(function() {
@@ -114,7 +119,7 @@ function updateOrDeleteCartItems(action, cart_container) {
                 let quantity = parseInt($(this).find('.cart_product_count').text()) || 0;
                 amount += price * quantity;
             });
-            $('#total-amount').text(`Total: $${amount.toFixed(2)}`);
+            $('#total-amount').html(`Total: ${CURRENCY_HTML_CODES[currency]}${amount.toFixed(2)}`);
         },
         error: function (xhr) {
             cart_container.find('button').attr("disabled", false);
@@ -145,8 +150,25 @@ $(document).ready(function () {
         updateOrDeleteCartItems("delete", $(this).closest('.cart-item'));
     });
 
-    $('#proceed-to-pay').click(function () {
-        alert('Proceeding to payment!');
-        // Redirect to payment page
+    $('#proceed_to_pay').click(function () {
+        let order_items = []
+        $(this).parent().parent().find('.cart-item').each((index, ele) => {            
+            let cart_details = $(ele).data('details');
+            let quantity = parseInt($(ele).find('.cart_product_count').text()) || 0;
+            if (cart_details) {
+                cart_details = decodeStringToObject(cart_details); 
+                order_items.push({
+                    cart_items_id: cart_details[0],
+                    product_id: cart_details[1],
+                    quantity: quantity,
+                });
+            }
+        });
+        if (order_items.length === 0) {
+            alert("No items in the cart.");
+            return;
+        }
+        // Initialize the payment
+        placeOrderPayment(order_items);
     });
 });

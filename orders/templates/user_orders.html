@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Ridex Leather - Orders{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/orders/user_orders.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="order-container">
+        <h1 class="order-main-heading">My Orders</h1>
+        <p id="error-message" class="border border-danger rounded text-center mb-3 text-danger p-2" style="display: none;"></p>
+        <div id="orders-container"></div>
+        <!-- Pagination Footer -->
+        <nav aria-label="Page navigation" class="border border-secondary-subtle rounded p-3 mt-4">
+            <ul class="pagination justify-content-center mb-0" id="pagination">
+            <!-- Dynamic pagination buttons will be inserted here -->
+            </ul>
+        </nav>
+    </div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{% static 'js/orders/user_orders.js' %}"></script>
+{% endblock %}

@@ -93,13 +93,13 @@ function removeCookie(name, options = {}) {
 };
 
 document.addEventListener("DOMContentLoaded", function () {
-    // Auto refresh access token on interval of 4.5 seconds if user already logged in
+    // Auto refresh access token on interval of 29 minutes if user already logged in
     if (getCookie("access_token")) {
         refreshAccessToken();
         setInterval(() => {
             console.log("Auto update token successfully.");
             refreshAccessToken();
-        }, 4.5 * 60 * 1000);  // 4.5 minutes
+        }, 29 * 60 * 60 * 1000);  // 29 minutes
     }
 
     setAuthLinks();
@@ -282,6 +282,171 @@ function startTimer() {
         }
     }, 1000);
 }
+
+function verifyPayment(paymentData) {
+    $.ajax({
+        url: "/orders/payment",
+        type: "POST",
+        data: JSON.stringify(paymentData),
+        contentType: "application/json",
+        success: function () {
+            window.location.href = '/orders/payment_success';
+        },
+        error: function () {
+            showAlertMessage("Payment Verification Failed", "danger");
+        }
+    });
+}
+
+function deleteDissmissedOrderData(order_id) {
+    let accessToken = getCookie("access_token");
+    // Check access token for user login or not. Redirect to login page if not logged in.
+    if (!accessToken) {
+        // Remove user credentials on logout.
+        if (localStorage.getItem('eg_user')) localStorage.removeItem('eg_user');
+        return
+    }
+    $.ajax({
+        url: `/orders/order/${order_id}`,
+        type: "DELETE",
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        },
+        contentType: "application/json",
+        success: function (resp) {
+            console.log("Order has been cancelled.");
+        },
+        error: function (xhr) {
+            console.error("Order doesn't found.");
+        }
+    });
+}
+
+function getUserPhoneNumber(options) {
+    let phoneNumber = document.getElementById('phoneNumber');
+    // Reset previous iti instance
+    let check_iti = window.intlTelInputGlobals.getInstance(phoneNumber);
+    if (check_iti) {
+        check_iti.setCountry('us');
+        check_iti.setNumber('');
+        check_iti.destroy();
+    }
+    // Required phone number checker library to validate and provide with country code.
+    let iti = window.intlTelInput(phoneNumber, {
+        separateDialCode: true,  // Show the country code separately
+        preferredCountries: ["us", "in", "gb"], // Add your preferred countries
+        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.10/js/utils.js" // For validation and formatting
+    });
+
+    // Show modal to get the user phone number
+    $('#phoneModal').modal('show');
+
+    $('#phoneForm').on('submit', function(e) {
+        let accessToken = getCookie("access_token");
+        // Check access token for user login or not. Redirect to login page if not logged in.
+        if (!accessToken) {
+            // Remove user credentials on logout.
+            if (localStorage.getItem('eg_user')) localStorage.removeItem('eg_user');
+            window.location.href = '/login';
+            return
+        }
+        e.preventDefault();
+        let btn = $(this).find('button[type="submit"]');
+        btn.prop('disabled',true).html(`<i class="fa fa-spinner fa-spin me-2"></i>Submit`);
+        let phone_number = iti.getNumber();
+
+        if (!iti.isValidNumber()) {
+            $('#show-error-message').html("Enter a valid phone number.").show();
+            setTimeout(() => {
+                $('#show-error-message').empty().hide();
+            }, 2500);
+            btn.prop('disabled',false).html(`Submit`);
+            return;
+        }
+
+        let formData = new FormData();
+        formData.set('mobile_number', phone_number);
+        $.ajax({
+            url: '/api/profile',
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            },
+            processData: false,
+            contentType: false,
+            data: formData,
+            success: function () {
+                btn.prop('disabled',false).html(`Submit`);
+                $('#phoneModal').modal('hide');
+                options.prefill['contact'] = phone_number;
+                let rzp1 = new Razorpay(options);
+                rzp1.open();
+            },
+            error: function (xhr) {
+                btn.prop('disabled',false).html(`Submit`);
+                $('#show-error-message').html(Object.values(xhr.responseJSON)[0]).show();
+                setTimeout(() => {
+                    $('#show-error-message').empty().hide();
+                }, 2500);
+            }
+        });
+    });
+}
+
+function placeOrderPayment(cartData) {    
+    let accessToken = isLoggedIn();
+    // Check access token for user login or not. Redirect to login page if not logged in.
+    if (!accessToken) {
+        // Remove user credentials on logout.
+        if (localStorage.getItem('eg_user')) localStorage.removeItem('eg_user');
+        window.location.href = '/login';
+        return
+    }
+    let currency = getCookie("currency") || "USD";
+    $('#proceed_to_pay').prop('disabled',true);
+    $.ajax({
+        url: "/orders/order",
+        type: "POST",
+        data: JSON.stringify({"order_items": cartData, "currency": currency}),
+        headers: {
+            "Authorization": "Bearer " + accessToken, // Include the access token in the Authorization header
+        },
+        contentType: "application/json",
+        success: function (response) {
+            let options = {
+                key: response.api_key,
+                amount: parseInt(response.amount * 100),
+                currency: currency,
+                order_id: response.razorpay_order_id,
+                name: response.name,
+                description: response.description,
+                prefill: response.prefill,
+                handler: (payment) => {                    
+                    verifyPayment(payment);
+                },
+                modal: {
+                    confirm_close: true,
+                    ondismiss: function() {
+                        deleteDissmissedOrderData(response.order_id)
+                    }
+                }
+            };
+            
+            if (response.prefill.contact) {
+                let rzp1 = new Razorpay(options);
+                rzp1.open();
+            } else {
+                getUserPhoneNumber(options);
+            }
+            $('#proceed_to_pay').prop('disabled',false);
+        },
+        error: function (xhr) {
+            $('#proceed_to_pay').prop('disabled',false);
+            showAlertMessage(Object.values(xhr.responseJSON)[0],"danger")
+        }
+    });
+}
+
 
 $(document).ready(function () {
     fetchFooterFilterCategories({});
