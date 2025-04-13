@@ -10,7 +10,7 @@ function previewImage(event) {
 
 $(document).ready(function () {
     const profile_api_url = '/api/profile';
-    const phoneNumber = document.querySelector("#phoneNumber");
+    const phoneNumber = document.querySelector("#userPhoneNumber");
     const iti = window.intlTelInput(phoneNumber, {
         separateDialCode: true,  // Show the country code separately
         preferredCountries: ["us", "in", "gb"], // Add your preferred countries
@@ -21,12 +21,20 @@ $(document).ready(function () {
         document.getElementById("country_name").value = `${iti.getSelectedCountryData().name} - ${iti.getSelectedCountryData().iso2}`;
     });
 
+    let accessToken = getCookie("access_token");
+    // Check access token for user login or not. Redirect to login page if not logged in.
+    if (!accessToken) {
+        // Remove user credentials on logout.
+        if (localStorage.getItem('eg_user')) localStorage.removeItem('eg_user');
+        window.location.href = '/login';
+        return
+    }
     // Fetch data and auto-fill form
     $.ajax({
         url: profile_api_url,
         method: 'GET',
         headers: {
-            'Authorization': `Bearer ${getCookie('access_token')}`
+            'Authorization': `Bearer ${accessToken}`
         },
         success: function (data) {
             // Auto-fill the form
@@ -57,6 +65,14 @@ $(document).ready(function () {
     });
 
     $('#editProfileForm').on('submit', function (e) {
+        let accessToken = getCookie("access_token");
+        // Check access token for user login or not. Redirect to login page if not logged in.
+        if (!accessToken) {
+            // Remove user credentials on logout.
+            if (localStorage.getItem('eg_user')) localStorage.removeItem('eg_user');
+            window.location.href = '/login';
+            return
+        }
         e.preventDefault();
         let btn = $(this).find('button[type="submit"]');
         btn.prop('disabled',true).html(`<i class="fa fa-spinner fa-spin me-2"></i>Update Profile`);
@@ -80,7 +96,7 @@ $(document).ready(function () {
             url: profile_api_url,
             method: 'PUT',
             headers: {
-                'Authorization': `Bearer ${getCookie('access_token')}`
+                'Authorization': `Bearer ${accessToken}`
             },
             processData: false,
             contentType: false,

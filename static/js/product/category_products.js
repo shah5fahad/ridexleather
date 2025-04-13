@@ -183,7 +183,7 @@ function updatePagination(totalProducts, productsPerPage, currentPage, filters) 
     // Next button
     pagination.append(`
         <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
-          <a class="btn page-link" onclick="changePage('${encodeURIComponent(JSON.stringify(filters))}', ${currentPage + 1})", ${totalPages})'>NEXT</a>
+          <a class="btn page-link" onclick="changePage('${encodeURIComponent(JSON.stringify(filters))}', ${currentPage + 1}, ${totalPages})">NEXT</a>
         </li>
     `);
 }

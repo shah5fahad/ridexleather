@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from orders.models import CartItems, Order, OrderItems
+from orders.models import CartItems, Order, OrderItems, Payment
 from products.products_apis.serializers import ProductSerializer
 from products.models import Product
 
@@ -33,7 +33,7 @@ class CartItemsSerializer(serializers.ModelSerializer):
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
-    product = ProductSerializer(read_only=True, exclude=["specifications", "category", "description"])
+    product = ProductSerializer(read_only=True, include=["id", "name", "product_image"])
 
     class Meta:
         model = OrderItems
@@ -41,14 +41,27 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    items = OrderItemSerializer(many=True, read_only=True)
+    items = serializers.SerializerMethodField()
+    payment_date = serializers.SerializerMethodField()
+    order_id = serializers.SerializerMethodField()
+    ship_status = serializers.CharField(source="get_shipping_status_display", read_only=True)
 
     class Meta:
         model = Order
-        fields = ["id", "items", "total_amount", "is_paid", "created_at"]
+        fields = ["id", "items", "total_amount", "payment_date", "shipping_details", "shipping_status", "ship_status", "currency", "updated_at", "order_id"]
+        
+    def get_payment_date(self, obj):
+        return obj.payment.created_at
+
+    def get_order_id(self, obj):
+        return obj.payment.razorpay_order_id
+
+    def get_items(self, obj):
+        serializer = OrderItemSerializer(obj.order_items.all(), many=True, read_only=True)
+        return serializer.data
 
 
-# class PaymentSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Payment
-#         fields = "__all__"
+class PaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Payment
+        fields = ["id", "order", "razorpay_order_id", "razorpay_payment_id", "amount", "status", "failure_reason", "created_at"]

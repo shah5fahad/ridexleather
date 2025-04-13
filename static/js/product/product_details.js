@@ -193,7 +193,7 @@ function updateProductDetails(pt_id) {
                                     <button class="btn btn-outline-primary" onclick="updateCartItemsQuantity(this, 'increase', ${data.cart_items[0].id})">+</button>
                                 </div>`
                         }
-                        <button class="btn btn-outline-success">Buy Now</button>
+                        <button class="btn btn-outline-success" id="proceed_to_pay" onclick="directPurchaseProduct(this, ${data.id})">Buy Now</button>
                     </div>
                     ${product_details_html !== '' ?
                         `<div class="product-specification">Product Details</div>
@@ -261,6 +261,19 @@ function updateProductDetails(pt_id) {
             `);
         }
     })
+}
+
+function directPurchaseProduct(btn, product_id) {
+    let quantity = $(btn).parent().find('.product_cart_quantity').length !== 0 ? parseInt($(btn).parent().find('.product_cart_quantity').html()) : 1;
+    
+    if (!Number.isInteger(quantity)) {
+        showAlertMessage("Please select quantity of the product.", "danger");
+        return;
+    }
+    placeOrderPayment([{
+        product_id: product_id,
+        quantity: quantity,
+    }]);
 }
 
 $(document).ready(function() {

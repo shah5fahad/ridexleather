@@ -38,12 +38,13 @@
     padding: 3px 0 3px 0;
 }
 .cart-item-details h5:hover {
-    color: #0505d4;
-    font-size: 19px;
+    color: #1717ac;
+    font-weight: 700;
     cursor: pointer;
-    border: 1px solid #0505d4;
-    border-radius: 8px;
-    padding-left: 8px;
+}
+.cart-item img:hover {
+    cursor: pointer;
+    transform: scale(1.1);
 }
 .cart-item-controls {
     display: flex;

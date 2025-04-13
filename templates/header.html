@@ -31,6 +31,8 @@
                     <a class="nav-link btn btn-outline-secondary px-3 ms-2" href="{% url 'register' %}">Sign Up</a>
                 </li>
             </ul>
+            <div class="me-4 authorized_user"><a class="text-decoration-none" href="/orders/my_cart"><i class="fa fa-shopping-cart fs-4 d-block text-secondary"></i><div style="font-size: 8px; text-align: center; font-weight: 600; color: black;">My Cart</div></a></div>
+            <div class="me-4 authorized_user"><a class="text-decoration-none" href="/orders/my_order"><i class="fa fa-bag-shopping fs-3 d-block text-secondary text-center"></i><div style="font-size: 8px; font-weight: 600; color: black;">My Orders</div></a></div>
             <div class="profile-dropdown dropdown position-relative authorized_user">
                 <!-- Profile Picture -->
                 <a href="#" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false" class="d-flex align-items-center text-decoration-none">
@@ -47,6 +49,7 @@
                     <!-- Action Items -->
                     <li><a class="dropdown-item" href="{% url 'profile' %}">View Profile</a></li>
                     <li><a class="dropdown-item" href="{% url 'user-cart' %}">My Cart</a></li>
+                    <li><a class="dropdown-item" href="{% url 'user-order' %}">My Orders</a></li>
                     <li><a class="dropdown-item" href="{% url 'user-wishlist' %}">My Wishlist</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item text-danger logoutBtn" href="#">Logout</a></li>
@@ -82,6 +85,7 @@
             <li class="authorized_user"><a href="{% url 'landing' %}"><i class="fa fa-home"></i> Home</a></li>
             <li class="authorized_user"><a href="{% url 'profile' %}"><i class="fa fa-user"></i> Profile</a></li>
             <li class="authorized_user"><a href="{% url 'user-cart' %}"><i class="fa fa-shopping-cart"></i> My Cart</a></li>
+            <li class="authorized_user"><a href="{% url 'user-order' %}"><i class="fa-solid fa-bag-shopping"></i> My Order</a></li>
             <li class="anonymous_user"><a href="{% url 'login' %}"><i class="fa fa-sign-in"></i> Login</a></li>
             <li class="anonymous_user"><a href="{% url 'register' %}"><i class="fa fa-user-plus"></i> Register</a></li>
             <li><a href="{% url 'user-wishlist' %}"><i class="fa fa-heart"></i> My Wishlist</a></li>
