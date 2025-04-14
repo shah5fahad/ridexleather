@@ -314,6 +314,7 @@ function deleteDissmissedOrderData(order_id) {
         },
         contentType: "application/json",
         success: function (resp) {
+            $('#phoneModal').removeData('order_id');
             console.log("Order has been cancelled.");
         },
         error: function (xhr) {
@@ -322,7 +323,7 @@ function deleteDissmissedOrderData(order_id) {
     });
 }
 
-function getUserPhoneNumber(options) {
+function getUserPhoneNumber(options, order_id) {
     let phoneNumber = document.getElementById('phoneNumber');
     // Reset previous iti instance
     let check_iti = window.intlTelInputGlobals.getInstance(phoneNumber);
@@ -338,7 +339,8 @@ function getUserPhoneNumber(options) {
         utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.10/js/utils.js" // For validation and formatting
     });
 
-    // Show modal to get the user phone number
+    // Show modal to get the user phone number and set order_id in model
+    $('#phoneModal').data("order_id", order_id);
     $('#phoneModal').modal('show');
 
     $('#phoneForm').on('submit', function(e) {
@@ -366,6 +368,7 @@ function getUserPhoneNumber(options) {
 
         let formData = new FormData();
         formData.set('mobile_number', phone_number);
+        formData.set('country_name', `${iti.getSelectedCountryData().name} - ${iti.getSelectedCountryData().iso2}`);
         $.ajax({
             url: '/api/profile',
             method: 'PUT',
@@ -376,6 +379,7 @@ function getUserPhoneNumber(options) {
             contentType: false,
             data: formData,
             success: function () {
+                $('#phoneModal').removeData('order_id');
                 btn.prop('disabled',false).html(`Submit`);
                 $('#phoneModal').modal('hide');
                 options.prefill['contact'] = phone_number;
@@ -436,7 +440,7 @@ function placeOrderPayment(cartData) {
                 let rzp1 = new Razorpay(options);
                 rzp1.open();
             } else {
-                getUserPhoneNumber(options);
+                getUserPhoneNumber(options, response.order_id);
             }
             $('#proceed_to_pay').prop('disabled',false);
         },
@@ -503,5 +507,12 @@ $(document).ready(function () {
         date.setTime(date.getTime()+(60*60*1000));  // Cookies expire in 60 minutes
         document.cookie = `currency=${newCurrency}; expires=${date.toGMTString()};path=/`;
         location.reload();  // Reload page to apply changes
+    });
+    // Auto delete order data when user close phone number update modal
+    $('#phoneModal').on('hidden.bs.modal', function () {
+        let order_id = $('#phoneModal').data("order_id");
+        if (order_id) {
+            deleteDissmissedOrderData(order_id);
+        }
     });
 });

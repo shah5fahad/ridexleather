@@ -53,7 +53,9 @@ $(document).ready(function () {
                 } else if (key === "country_name" && value) {
                     if (value.split(" - ").length > 1) iti.setCountry(value.split(" - ")[1]);            
                     document.getElementById("country_name").value = value;
-                } else {
+                } else if (key == "mobile_number" && value) {
+                    iti.setNumber(value);
+                } else {                    
                     const field = $(`#editProfileForm [name="${key}"]`);
                     if (field.length) field.val(value);
                 }
