@@ -129,6 +129,34 @@ function adjustVisibility() {
     });
 }
 
+
+function selectProductSpec(curr) {
+    $(curr).closest("ul").find("li").attr("selected", false).removeClass('spec_selected');
+    $(curr).attr("selected", true).addClass('spec_selected');
+}
+
+
+function generateProductSpecHtml(product) {
+    let product_spec_html = '';        
+    let cart_product_spec = product.cart_items.length !== 0 && product.cart_items[0].cart_product_spec !== '' ? JSON.parse(product.cart_items[0].cart_product_spec) : {}
+    product.product_spec.forEach((spec) => {
+        const spec_detail = JSON.parse(spec.spec_detail);            
+        let spec_detail_html = '';
+        $.each(spec_detail, function (idx, spec_data) {
+            let selected_condition = cart_product_spec[spec.spec_name] ? cart_product_spec[spec.spec_name] === spec_data : idx === 0;                
+            spec_detail_html += `<li class="d-inline rounded-pill p-1 ${selected_condition ? `spec_selected" selected="selected"` : '"'} data-value="${spec_data}" onclick="selectProductSpec(this)"><span class="spec_button border-0 btn spec_${spec_data}" ${spec.spec_name === 'Colour' ? `style="background-color: ${spec_data}; margin-bottom: 2.5px; padding: 10px;"` : ''}>${spec.spec_name !== 'Colour' ? spec_data : ''}</span></li>`
+        });
+        product_spec_html += `
+            <div class="mx-2 product_spec">
+                <div class="d-inline product_spec_name">${spec.spec_name}</div>
+                <ul class="d-inline p-0 fst-italic">${spec_detail_html}</ul>
+            </div>
+        `;
+    });
+    return product_spec_html
+}
+
+
 function addProductToCart(btn, product_id, quantity = 1, main_product = false) {
     let accessToken = isLoggedIn();
     // Check access token for user login or not. Redirect to login page if not logged in.
@@ -138,6 +166,24 @@ function addProductToCart(btn, product_id, quantity = 1, main_product = false) {
         window.location.href = '/login';
         return
     }
+    // Add product specification deatils with product cart value
+    let spec_ele = $(btn).closest(".category-product-card").find(".product_spec");
+    if (spec_ele.length === 0) {
+        spec_ele = $(btn).closest(".product-details").find(".product_spec");
+    }    
+    let product_spec = {};
+    if (spec_ele.length !== 0) {
+        spec_ele.each(function (idx, ele) {
+            let selected_spec_ele = $(ele).find("ul li[selected]");            
+            if (selected_spec_ele.length > 0) {
+                let spec_name = $(ele).find(".product_spec_name").text().trim(); // Trim in case of whitespace
+                let spec_value = selected_spec_ele.data("value");
+                if (spec_name && spec_value !== undefined) {
+                    product_spec[spec_name] = spec_value;
+                }
+            }
+        });
+    }    
     $.ajax({
         url: "/orders/cart-items",
         type: "POST",
@@ -148,7 +194,8 @@ function addProductToCart(btn, product_id, quantity = 1, main_product = false) {
         contentType: 'application/json',
         data: JSON.stringify({
             product_id: product_id, // The product ID
-            quantity: quantity // Default quantity is 1
+            quantity: quantity, // Default quantity is 1
+            cart_product_spec: JSON.stringify(product_spec)
         }),
         success: function (response) {
             if (main_product === false) {
@@ -343,7 +390,7 @@ function getUserPhoneNumber(options, order_id) {
     $('#phoneModal').data("order_id", order_id);
     $('#phoneModal').modal('show');
 
-    $('#phoneForm').on('submit', function(e) {
+    $('#phoneNumberForm').on('submit', function(e) {
         let accessToken = getCookie("access_token");
         // Check access token for user login or not. Redirect to login page if not logged in.
         if (!accessToken) {

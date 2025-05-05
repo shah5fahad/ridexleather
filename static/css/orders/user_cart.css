@@ -38,8 +38,8 @@
     padding: 3px 0 3px 0;
 }
 .cart-item-details h5:hover {
-    color: #1717ac;
-    font-weight: 700;
+    color: #25cfdb;
+    font-weight: 600;
     cursor: pointer;
 }
 .cart-item img:hover {

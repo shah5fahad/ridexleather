@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
-from products.models import Product, Category, ProductImage, WebsiteBanner
+from products.models import Product, Category, ProductImage, WebsiteBanner, ProductSpecifications
 from account.models import WebsiteGeneralConfiguration
 from orders.models import CartItems
 from django.core.cache import cache
@@ -10,6 +10,12 @@ class ProductImageSerializer(ModelSerializer):
     class Meta:
         model = ProductImage
         fields = ["product_image"]
+
+
+class ProductSpecificationsSerializer(ModelSerializer):
+    class Meta:
+        model = ProductSpecifications
+        fields = ["spec_name", "spec_detail"]
 
 
 class CategorySerializer(ModelSerializer):
@@ -38,10 +44,11 @@ class ProductSerializer(ModelSerializer):
     cart_items = serializers.SerializerMethodField()
     price = serializers.SerializerMethodField()
     category = CategorySerializer()
+    product_spec = ProductSpecificationsSerializer(many=True, read_only=True)
 
     class Meta:
         model = Product
-        fields = ["id", "name", "price", "discount_percent", "product_image", "specifications", "category", "description", "cart_items"]
+        fields = ["id", "name", "price", "discount_percent", "product_image", "specifications", "category", "description", "cart_items", "product_spec"]
         
     def get_product_image(self, obj):
         image_limit = int(self.context.get("image_limit", 1))
@@ -55,7 +62,8 @@ class ProductSerializer(ModelSerializer):
             if len(cart_item) > 0:
                 return [{
                     "id": cart_item[0].id,
-                    "quantity": cart_item[0].quantity
+                    "quantity": cart_item[0].quantity,
+                    "cart_product_spec": cart_item[0].cart_product_spec
                 }]
         return []
 

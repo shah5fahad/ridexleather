@@ -110,7 +110,15 @@ function displayOrders(orders) {
                 <div class="product-card">
                     <a href="/items/product?pt_id=${item.product.id}"><img class="product-image" src="${item.product.product_image.length > 0 ? item.product.product_image[0].product_image : "/static/images/default-product-image.png"}" alt="${item.product.name}"></a>
                     <h6 class="product-name">${item.product.name}</h6>
-                    <p>Quantity: ${item.quantity}</p>
+                    <p class="mb-1">Quantity: ${item.quantity}</p>
+                    ${item.order_product_spec ? Object.entries(JSON.parse(item.order_product_spec)).map(([key, value]) => `
+                        <p class="d-inline">
+                            <span style="font-weight: 500;">${key}</span>
+                            <span class="ms-1 fst-italic" style="font-size: 12px; ${key === 'Colour' ? `background: ${value}; color: ${value};` : ''}">
+                                ${key === 'Colour' ? 'ooo' : value}
+                            </span>
+                        </p>
+                    `).join(' & ') : ''}
                     <p class="mb-0">Price: ${CURRENCY_HTML_CODES[order.currency]}${parseFloat(item.price).toFixed(2)}</p>
                 </div>
             </div>`).join('');
@@ -128,7 +136,7 @@ function displayOrders(orders) {
                     <strong>Tracking</strong>
                     <div class="shipping-checkpoints">${shippingHtml}</div>
                     <strong>Products</strong>
-                    <div class="products-grid row">${itemsHtml}</div>
+                    <div class="products-grid row" style="font-family: cursive;">${itemsHtml}</div>
                 </div>
             </div>`;
     }).join("");

@@ -326,3 +326,25 @@ body::-webkit-scrollbar-thumb:hover {
 #resendBtn:hover {
     text-decoration: underline;
 }
+
+.spec_button {
+    padding: 8px;
+    border-radius: 50%;
+}
+
+.spec_selected {
+    border: 2.5px solid #40dcd4;
+}
+
+.product_spec_name {
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.product_spec span {
+    font-size: 14px;
+}
+
+.product_spec {
+    margin-bottom: 5px;
+}

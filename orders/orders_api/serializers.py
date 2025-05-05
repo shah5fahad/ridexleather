@@ -11,7 +11,7 @@ class CartItemsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CartItems
-        fields = ["id", "product_id", "product", "quantity", "updated_at"]
+        fields = ["id", "product_id", "product", "quantity", "updated_at", "cart_product_spec"]
         read_only_fields = ['user']
         
     def __init__(self, *args, **kwargs):
@@ -37,7 +37,7 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OrderItems
-        fields = ["id", "product", "quantity", "price"]
+        fields = ["id", "product", "quantity", "price", "order_product_spec"]
 
 
 class OrderSerializer(serializers.ModelSerializer):

@@ -26,14 +26,20 @@ function fetchUserCartData() {
             let total = 0;
             let currency = getCookie('currency') || "USD";          
             response.forEach(item => {
+                let cart_product_spec_arr = [];
+                let cart_product_spec = JSON.parse(item.cart_product_spec);
+                $.each(cart_product_spec, function(key, value) {
+                    cart_product_spec_arr.push(`<p class="d-inline"><span style="font-weight: 500;">${key}</span><span class="ms-2 fst-italic" style="font-size: 12px; ${key === 'Colour' ? `background: ${value}; color: ${value};` : ''}">${key === 'Colour' ? 'colour' : value}</span></p>`);
+                });
                 total += (item.product.discount_percent > 0 ? getDiscountPrice(item.product.price, item.product.discount_percent) : item.product.price) * item.quantity;
                 itemsHtml += `
-                    <div class="cart-item" data-details="${encodeDataToString([item.id, item.product.id, item.quantity])}">
+                    <div class="cart-item" data-details="${encodeDataToString([item.id, item.product.id, item.quantity, item.cart_product_spec])}">
                         <a class="text-decoration-none text-dark" href="/items/product?pt_id=${item.product.id}"><img src="${item.product.product_image.length > 0 ? item.product.product_image[0].product_image : "/static/images/default-product-image.png"}" alt="${item.product.name}"></a>
-                        <div class="cart-item-details" data-price="${item.product.discount_percent > 0 ? getDiscountPrice(item.product.price, item.product.discount_percent) : item.product.price}">
+                        <div class="cart-item-details" data-price="${item.product.discount_percent > 0 ? getDiscountPrice(item.product.price, item.product.discount_percent) : item.product.price}" style="font-family: cursive;">
                             <a class="text-decoration-none text-dark" href="/items/product?pt_id=${item.product.id}"><h5>${item.product.name}</h5></a>
-                            <p class="mb-0">Product Price: <span class="text-success">${item.product.discount_percent && item.product.price ? `${CURRENCY_HTML_CODES[currency]}${getDiscountPrice(item.product.price, item.product.discount_percent)} <del class="text-danger">${CURRENCY_HTML_CODES[currency]}${item.product.price} </del>` : `${CURRENCY_HTML_CODES[currency]}${item.product.price}`}</span></p>
-                            <p class="fw-bold">Total Product Cost: <span id="cart_product_total_cost" class="text-success">${CURRENCY_HTML_CODES[currency]}${((item.product.discount_percent > 0 ? getDiscountPrice(item.product.price, item.product.discount_percent) : item.product.price) * item.quantity).toFixed(2)}</span></p>
+                            <p class="mb-0">Product Price<span class="ms-2 text-success">${item.product.discount_percent && item.product.price ? `${CURRENCY_HTML_CODES[currency]}${getDiscountPrice(item.product.price, item.product.discount_percent)} <del class="text-danger">${CURRENCY_HTML_CODES[currency]}${item.product.price} </del>` : `${CURRENCY_HTML_CODES[currency]}${item.product.price}`}</span></p>
+                            <p class="fw-bold mb-0">Total Product Cost<span id="cart_product_total_cost" class="ms-2 text-success">${CURRENCY_HTML_CODES[currency]}${((item.product.discount_percent > 0 ? getDiscountPrice(item.product.price, item.product.discount_percent) : item.product.price) * item.quantity).toFixed(2)}</span></p>
+                            ${cart_product_spec_arr.join(' & ')}    
                         </div>
                         <div class="cart-item-controls">
                             <button class="btn btn-outline-primary cart_product_count_decrease" ${item.quantity == 1 ? 'disabled' : ''}>-</button>
@@ -161,6 +167,7 @@ $(document).ready(function () {
                     cart_items_id: cart_details[0],
                     product_id: cart_details[1],
                     quantity: quantity,
+                    order_product_spec: cart_details[3]
                 });
             }
         });

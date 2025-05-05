@@ -21,6 +21,7 @@ function updateCategoriesProducts(category_id, product_id) {
                                 <img src="${product.product_image.length > 0 ? product.product_image[0].product_image : "/static/images/default-product-image.png"}" alt="${product.name}">
                             </a>
                             <div class="category-product-name"><p>${product.name}</p></div>
+                            ${generateProductSpecHtml(product)}
                             <div class="category-product-footer">
                                 <div class="category-product-price">${product.discount_percent && product.price ? `${CURRENCY_HTML_CODES[currency]}${getDiscountPrice(product.price, product.discount_percent)} <del>${CURRENCY_HTML_CODES[currency]}${product.price} </del>` : `${CURRENCY_HTML_CODES[currency]}${product.price}`}</div>
                                 <div class="category-product-buttons">
@@ -184,6 +185,7 @@ function updateProductDetails(pt_id) {
                     </div>
                     <div class="main-product-name">${data.name}</div>
                     <div><span class="fw-bold">${data.discount_percent && data.price ? `<span class="text-success fs-4">${CURRENCY_HTML_CODES[currency]}${getDiscountPrice(data.price, data.discount_percent)}</span> <del class="text-danger">${CURRENCY_HTML_CODES[currency]}${data.price} </del><span class="ps-2 fs-5 text-dark">(${data.discount_percent}&#37; OFF)</span>` : `<span class="fs-5 text-secondary">${CURRENCY_HTML_CODES[currency]}${data.price}`}</span></div>
+                    ${generateProductSpecHtml(data)}
                     <div class="d-flex justify-content-between mt-3">
                         ${data.cart_items.length === 0 
                             ? `<button class="btn btn-outline-primary" onclick="addProductToCart(this, ${data.id}, 1, true)">Add to Cart</button>` 
@@ -265,6 +267,20 @@ function updateProductDetails(pt_id) {
 
 function directPurchaseProduct(btn, product_id) {
     let quantity = $(btn).parent().find('.product_cart_quantity').length !== 0 ? parseInt($(btn).parent().find('.product_cart_quantity').html()) : 1;
+    let spec_ele = $(btn).closest(".product-details").find(".product_spec");
+    let product_spec = {};
+    if (spec_ele.length !== 0) {
+        spec_ele.each(function (idx, ele) {
+            let selected_spec_ele = $(ele).find("ul li[selected]");            
+            if (selected_spec_ele.length > 0) {
+                let spec_name = $(ele).find(".product_spec_name").text().trim(); // Trim in case of whitespace
+                let spec_value = selected_spec_ele.data("value");
+                if (spec_name && spec_value !== undefined) {
+                    product_spec[spec_name] = spec_value;
+                }
+            }
+        });
+    }    
     
     if (!Number.isInteger(quantity)) {
         showAlertMessage("Please select quantity of the product.", "danger");
@@ -273,6 +289,7 @@ function directPurchaseProduct(btn, product_id) {
     placeOrderPayment([{
         product_id: product_id,
         quantity: quantity,
+        order_product_spec: JSON.stringify(product_spec),
     }]);
 }
 
