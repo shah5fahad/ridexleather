@@ -92,7 +92,8 @@ function fetchFilterProducts(filters, page = 1) {
                             <a class="category-product-image" href="/items/product?pt_id=${product.id}">
                                 <img src="${product.product_image.length > 0 ? product.product_image[0].product_image : "/static/images/default-product-image.png"}" alt="${product.name}">
                             </a>
-                            <div class="category-product-name"><p>${product.name}</p></div>
+                            <div class="category-product-name"><p class="mb-0">${product.name}</p></div>
+                            ${generateProductSpecHtml(product)}
                             <div class="category-product-footer">
                                 <div class="category-product-price">${product.discount_percent && product.price ? `${CURRENCY_HTML_CODES[currency]}${getDiscountPrice(product.price, product.discount_percent)} <del>${CURRENCY_HTML_CODES[currency]}${product.price}</del>` : `${CURRENCY_HTML_CODES[currency]}${product.price}`}</div>
                                 <div class="category-product-buttons">

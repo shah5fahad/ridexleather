@@ -14,7 +14,16 @@ class Category(models.Model):
     updated_by = models.ForeignKey(
         User, on_delete=models.SET_NULL, related_name="updated_category", null=True
     )
-    
+
+    def __str__(self):
+        return self.name
+
+
+class ProductSpecifications(models.Model):
+    name = models.CharField(max_length=100)
+    spec_name = models.CharField(max_length=100)
+    spec_detail = models.TextField()
+
     def __str__(self):
         return self.name
 
@@ -43,10 +52,13 @@ class Product(models.Model):
     discount_percent = models.IntegerField(
         default=0, validators=[MinValueValidator(0), MaxValueValidator(100)]
     )
+    product_spec = models.ManyToManyField(
+        ProductSpecifications, related_name="product_spec"
+    )
 
     date_created = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
-    
+
     def __str__(self):
         return self.name
 
@@ -71,8 +83,12 @@ class WebsiteBanner(models.Model):
         User, on_delete=models.SET_NULL, related_name="updated_banner", null=True
     )
     product = models.ForeignKey(
-        Product, on_delete=models.SET_NULL, related_name="website_banner", null=True, blank=True
+        Product,
+        on_delete=models.SET_NULL,
+        related_name="website_banner",
+        null=True,
+        blank=True,
     )
-    
+
     def __str__(self):
         return self.name
