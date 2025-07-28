@@ -44,11 +44,14 @@ class OrderSerializer(serializers.ModelSerializer):
     items = serializers.SerializerMethodField()
     payment_date = serializers.SerializerMethodField()
     order_id = serializers.SerializerMethodField()
+    first_name = serializers.CharField(source="user.first_name", read_only=True)
+    last_name = serializers.CharField(source="user.last_name", read_only=True)
+    email = serializers.CharField(source="user.email", read_only=True)
     ship_status = serializers.CharField(source="get_shipping_status_display", read_only=True)
 
     class Meta:
         model = Order
-        fields = ["id", "items", "total_amount", "payment_date", "shipping_details", "shipping_status", "ship_status", "currency", "updated_at", "order_id"]
+        fields = ["id", "items", "total_amount", "payment_date", "shipping_details", "shipping_status", "ship_status", "currency", "updated_at", "order_id", "first_name", "last_name", "email"]
         
     def get_payment_date(self, obj):
         return obj.payment.created_at

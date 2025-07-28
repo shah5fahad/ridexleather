@@ -15,11 +15,12 @@ from django.conf import settings
 from orders.models import Order, OrderItems, Payment
 from products.models import Product
 from .serializers import OrderSerializer
-from ridexleather.common import StandardResultsSetPagination
+from ridexleather.common import StandardResultsSetPagination, send_custom_email
 from razorpay.errors import BadRequestError, ServerError, GatewayError
 from django.db.models import F
 from django.core.cache import cache
 from account.models import WebsiteGeneralConfiguration
+from datetime import datetime
 import razorpay
 
 
@@ -140,12 +141,12 @@ class OrderView(APIView):
                         currency_rate = 1
             product_price = float(prod.price) * float(currency_rate)
             product_price = round(product_price) if currency != 'USD' else product_price
-            product_pricing[prod.id] = round(product_price * ((100 - prod.discount_percent) / 100), decimal_val)
-
-        total_amount = 0
+            product_pricing[prod.id] = [round(product_price * ((100 - prod.discount_percent) / 100), decimal_val), round(float(prod.price) * ((100 - prod.discount_percent) / 100), decimal_val)]
+        total_amount, total_amount_in_usd = 0, 0
         for idx, item in enumerate(order_items):
-            total_amount += product_pricing[item["product_id"]] * item["quantity"]
-            order_items[idx]['price'] = product_pricing[item['product_id']]
+            total_amount += product_pricing[item["product_id"]][0] * item["quantity"]
+            total_amount_in_usd += product_pricing[item["product_id"]][1] * item["quantity"]
+            order_items[idx]['price'] = product_pricing[item['product_id']][0]
         # Atleast total_amount should be greater than one.
         if total_amount < 1:
             return Response({"error": "Amount should be atlest one."}, status=status.HTTP_400_BAD_REQUEST)
@@ -177,6 +178,7 @@ class OrderView(APIView):
             order=order,
             razorpay_order_id=razorpay_order["id"],
             amount=total_amount,
+            amount_in_usd=total_amount_in_usd,
             status="PENDING"
         )
         
@@ -203,6 +205,8 @@ class OrderView(APIView):
         """
         Update an existing order's status.
         """
+        if not request.user or request.user.is_anonymous or not request.user.is_staff:
+            return Response({"error": "User not authorized"}, status=status.HTTP_403_FORBIDDEN)
         try:
             order = Order.objects.get(user=request.user, id=order_id)
             serializer = OrderSerializer(order, data=request.data, partial=True)
@@ -250,7 +254,93 @@ class PaymentView(APIView):
             cart_item_ids = payment.order.order_items.values_list('cart_items_id', flat=True)
             if cart_item_ids:
                 CartItems.objects.filter(id__in=list(cart_item_ids)).delete()
+            
+            product_rows = ''
+            for order_item in payment.order.order_items.select_related('product').all():
+                product_rows += f'''
+                    <tr>
+                        <td style="border: 1px solid #dddddd; padding: 10px;">{order_item.product.name}</td>
+                        <td style="border: 1px solid #dddddd; padding: 10px;">{order_item.quantity}</td>
+                        <td style="border: 1px solid #dddddd; padding: 10px;">{payment.order.currency} {order_item.price}</td>
+                        <td style="border: 1px solid #dddddd; padding: 10px;">{payment.order.currency} {order_item.quantity * order_item.price}</td>
+                    </tr>
+                '''
+                
+            # Mail User to confirm about the order placed
+            subject_custome = "Your Order Confirmation with RidexLeathers"
+            html_mail_customer = f'''
+                <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+                    <div style="max-width: 600px; margin: auto; background: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        <h2 style="color: #4CAF50;">Thank You for Your Order!</h2>
+                        <p>Hi <strong>{ payment.order.user.first_name }</strong>,</p>
+                        <p>We have received your order. Below are the details:</p>
 
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                        <thead>
+                            <tr>
+                            <th style="border: 1px solid #dddddd; padding: 10px; text-align: left; background-color: #f8f8f8;">Product</th>
+                            <th style="border: 1px solid #dddddd; padding: 10px;">Qty</th>
+                            <th style="border: 1px solid #dddddd; padding: 10px;">Price</th>
+                            <th style="border: 1px solid #dddddd; padding: 10px;">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            { product_rows }
+                            <tr>
+                            <td colspan="3" style="border: 1px solid #dddddd; padding: 10px; text-align:right;"><strong>Total Paid:</strong></td>
+                            <td style="border: 1px solid #dddddd; padding: 10px;"><strong>{payment.order.currency} {payment.order.total_amount}</strong></td>
+                            </tr>
+                        </tbody>
+                        </table>
+
+                        <p style="margin-top: 20px;">We'll notify you once your order is shipped.</p>
+
+                        <div style="margin-top: 20px; font-size: 12px; color: #666; text-align: center;">
+                        © RidexLeather. All rights reserved.
+                        </div>
+                    </div>
+                </div>
+            '''
+            send_custom_email(subject_custome, [payment.order.user.email], html_mail_customer)
+            
+            # Mail admin to inform about the orders
+            subject_admin = f"New Order Placed – {payment.order.user.first_name} has placed an order"
+            html_mail_admin = f'''
+                <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+                    <div style="max-width: 600px; margin: auto; background: #ffffff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        <h2 style="color: #e91e63;">New Order Received</h2>
+                        <p><strong>Customer Name:</strong> { payment.order.user.first_name }</p>
+                        <p><strong>Email:</strong> { payment.order.user.email }</p>
+                        <p><strong>Order Summary:</strong></p>
+
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                        <thead>
+                            <tr>
+                            <th style="border: 1px solid #dddddd; padding: 10px; background-color: #f8f8f8;">Product</th>
+                            <th style="border: 1px solid #dddddd; padding: 10px;">Qty</th>
+                            <th style="border: 1px solid #dddddd; padding: 10px;">Price</th>
+                            <th style="border: 1px solid #dddddd; padding: 10px;">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            { product_rows }
+                            <tr>
+                            <td colspan="3" style="border: 1px solid #dddddd; padding: 10px; text-align:right;"><strong>Total Paid:</strong></td>
+                            <td style="border: 1px solid #dddddd; padding: 10px;"><strong>{payment.order.currency} {payment.order.total_amount}</strong></td>
+                            </tr>
+                        </tbody>
+                        </table>
+
+                        <div style="margin-top: 20px; font-size: 12px; color: #666; text-align: center;">
+                            Order placed on { payment.created_at.strftime('%d-%m-%Y') }<br/>
+                            <a href="{ 'https://ridexleathers.com/admin_panel/customer_orders' }">View Order in Admin Panel</a>
+                        </div>
+                    </div>
+                </div>
+            '''
+            admin_mail = WebsiteGeneralConfiguration.objects.filter(meta_key='collect_orders_email').first()
+            send_custom_email(subject_admin, [admin_mail if admin_mail else 'ridexleatherhelpdesk@gmail.com'], html_mail_admin)
+            
             return Response({"message": "Payment successful"}, status=status.HTTP_200_OK)
 
         except Payment.DoesNotExist:

@@ -1,0 +1,65 @@
+{% extends 'admin_panel.html' %}
+{% load static %}
+
+{% block title %}Admin Orders{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/admin_panel/customer_orders.css' %}">
+{% endblock %}
+
+{% block content %}
+  <!-- Filter/Search Bar -->
+  <div class="filter-bar">
+    <h3>Search Filters</h3>
+    <form onsubmit="return applyOrderFilters(event);">
+      <div class="row">
+        <div class="col-md-5 mb-2">
+          <select class="form-select" id="updateSearchInput" onchange="changeSearchPlaceholder(this);">
+            <option value="first_name">User Name</option>
+            <option value="email">User Email</option>
+            <option value="order_id">Transaction ID</option>
+          </select>
+        </div>
+        <div class="col-md-5 mb-2">
+          <input type="text" id="searchOrder" class="form-control" placeholder="Search by User Name">
+        </div>
+        <div class="col-md-5 mb-2">
+          <select class="form-select" id="statusFilter">
+            <option value="">All Status</option>
+            <option value="placed">Order Placed</option>
+            <option value="processing">Processing</option>
+            <option value="shipped">Shipped</option>
+            <option value="out_of_delivery">Out of Delivery</option>
+            <option value="delivered">Delivered</option>
+            <option value="delayed">Delayed</option>
+            <option value="returned">Returned</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+        <div class="col-md-5 mb-2">
+          <select class="form-select" id="dateFilter">
+            <option value="-payment__created_at">Latest Orders</option>
+            <option value="payment__created_at">Oldest Orders</option>
+          </select>
+        </div>
+        <div class="col-md-10 text-center mt-2">
+          <button class="btn btn-primary" type="submit">Apply</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="order-container">
+      <h3 class="order-main-heading">Customer Orders</h3>
+      <div id="orders-container"></div>
+      <!-- Pagination Footer -->
+      <nav aria-label="Page navigation" class="border border-secondary-subtle rounded p-3 mt-4">
+          <ul class="pagination justify-content-center mb-0" id="pagination">
+          <!-- Dynamic pagination buttons will be inserted here -->
+          </ul>
+      </nav>
+  </div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="{% static 'js/admin_panel/customer_orders.js' %}"></script>
+{% endblock %}

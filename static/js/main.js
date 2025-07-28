@@ -19,12 +19,15 @@ function setAuthLinks() {
         let eg_user = localStorage.getItem('eg_user');
         if (eg_user) {
             eg_user = decodeStringToObject(eg_user);
+            if (eg_user.is_admin !== true) {
+                $('.admin_user').remove();
+            }
             $('.authorized_user .user_name').text(eg_user.user_name);
             $('.authorized_user .user_email').text(eg_user.user_email);
             if (eg_user.profile) $('.authorized_user img').attr('src', eg_user.profile);
         }
     } else {
-        $('.authorized_user').remove();
+        $('.authorized_user, .admin_user').remove();
     }
 }
 
@@ -331,15 +334,21 @@ function startTimer() {
 }
 
 function verifyPayment(paymentData) {
+    // Show Loader on payment success
+    $('#site-loader').fadeIn();
     $.ajax({
         url: "/orders/payment",
         type: "POST",
         data: JSON.stringify(paymentData),
         contentType: "application/json",
         success: function () {
+            // Hide Loader on payment success
+            $('#site-loader').fadeIn();
             window.location.href = '/orders/payment_success';
         },
         error: function () {
+            // Hide Loader on payment success
+            $('#site-loader').fadeIn();
             showAlertMessage("Payment Verification Failed", "danger");
         }
     });
@@ -493,7 +502,7 @@ function placeOrderPayment(cartData) {
         },
         error: function (xhr) {
             $('#proceed_to_pay').prop('disabled',false);
-            showAlertMessage(Object.values(xhr.responseJSON)[0],"danger")
+            showAlertMessage(Object.values(xhr.responseJSON)[0],"danger");
         }
     });
 }

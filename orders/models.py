@@ -68,6 +68,7 @@ class Payment(models.Model):
     razorpay_order_id = models.CharField(max_length=255, blank=True, null=True)
     razorpay_payment_id = models.CharField(max_length=255, blank=True, null=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
+    amount_in_usd = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     status = models.CharField(
         max_length=50,
         choices=[("PENDING", "Pending"), ("SUCCESS", "Success"), ("FAILED", "Failed")],

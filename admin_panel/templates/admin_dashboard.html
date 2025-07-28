@@ -1,0 +1,51 @@
+{% extends 'admin_panel.html' %}
+{% load static %}
+
+{% block title %}Admin Orders{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/admin_panel/admin_dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">📊 User Signup & Payment Analytics</h2>
+    <div class="card p-4 mb-4">
+        <h5 class="text-center mb-3">User Signup Analytics</h5>
+        <div class="mb-1 text-center">
+            <button class="btn btn-outline-primary mb-2 signup-filter-btn default-user-filter-btn" data-range="1">1 Day</button>
+            <button class="btn btn-outline-primary mb-2 signup-filter-btn" data-range="7">7 Days</button>
+            <button class="btn btn-outline-primary mb-2 signup-filter-btn" data-range="15">15 Days</button>
+            <button class="btn btn-outline-primary mb-2 signup-filter-btn" data-range="30">1 Month</button>
+            <input type="date" id="customSignupStart" class="form-control d-inline-block w-auto mx-1 mb-2">
+            <input type="date" id="customSignupEnd" class="form-control d-inline-block w-auto mx-1 mb-2">
+            <button class="btn btn-outline-secondary mb-2" id="customSignupFilter">Apply</button>
+        </div>
+        <div class="text-center">Total Users - <span class="fw-bold" id="total_user_count">0</span></div>
+        <div id="chartWrapper" style="position: relative; height: 400px;">
+            <canvas id="signupChart"></canvas>
+        </div>
+    </div>
+    <div class="card p-4">
+        <h5 class="text-center mb-3">Payment Analytics</h5>
+        <div class="mb-1 text-center">
+            <button class="btn btn-outline-primary mb-2 payment-filter-btn default-payment-filter-btn" data-range="1">1 Day</button>
+            <button class="btn btn-outline-primary mb-2 payment-filter-btn" data-range="7">7 Days</button>
+            <button class="btn btn-outline-primary mb-2 payment-filter-btn" data-range="15">15 Days</button>
+            <button class="btn btn-outline-primary mb-2 payment-filter-btn" data-range="30">1 Month</button>
+            <input type="date" id="customPaymentStart" class="form-control d-inline-block w-auto mx-1 mb-2">
+            <input type="date" id="customPaymentEnd" class="form-control d-inline-block w-auto mx-1 mb-2">
+            <button class="btn btn-outline-secondary mb-2" id="customPaymentFilter">Apply</button>
+        </div>
+        <div class="text-center">Total Amount - &#36;<span class="fw-bold" id="total_amount">0</span></div>
+        <div id="paymentChartWrapper" style="position: relative; height: 400px;">
+            <canvas id="paymentChart"></canvas>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{% static 'js/admin_panel/admin_dashboard.js' %}"></script>
+{% endblock %}
