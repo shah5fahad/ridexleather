@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "account",
     "products",
     "orders",
+    "admin_panel",
 ]
 
 MIDDLEWARE = [
@@ -166,6 +167,7 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
         'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
     ],
     'DEFAULT_THROTTLE_RATES': {
         'anon': '5/hour',  # 5 requests per hour for anonymous users

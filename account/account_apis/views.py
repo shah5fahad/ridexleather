@@ -180,6 +180,7 @@ class LoginView(APIView):
                 ),
                 "user_email": user.email,
                 "user_name": " ".join([user.first_name, user.last_name]),
+                "is_admin": user.is_staff
             }
             response = Response(
                 {"user": encodeBase64Json(eg_user)}, status=status.HTTP_200_OK

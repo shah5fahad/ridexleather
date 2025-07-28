@@ -27,7 +27,7 @@ function fetchUserCartData() {
             let currency = getCookie('currency') || "USD";          
             response.forEach(item => {
                 let cart_product_spec_arr = [];
-                let cart_product_spec = JSON.parse(item.cart_product_spec);
+                let cart_product_spec = JSON.parse(item.cart_product_spec || '[]');
                 $.each(cart_product_spec, function(key, value) {
                     cart_product_spec_arr.push(`<p class="d-inline"><span style="font-weight: 500;">${key}</span><span class="ms-2 fst-italic" style="font-size: 12px; ${key === 'Colour' ? `background: ${value}; color: ${value};` : ''}">${key === 'Colour' ? 'colour' : value}</span></p>`);
                 });
